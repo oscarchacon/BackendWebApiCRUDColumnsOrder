@@ -161,5 +161,5 @@ detallarán a continuación:
 
 
 LICENCIA.
-----------
+==========
 Este Template contiene la licencia MIT.
