@@ -34,7 +34,7 @@ Requisitos:
 -----------
 
 -   Tener instalado .Net Core 3.1 SDK 3.1.201, puede ser obtenido desde:
-    [[https://dotnet.microsoft.com/download/dotnet-core/3.1]{.underline}](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    [https://dotnet.microsoft.com/download/dotnet-core/3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 -   Algún IDE que pueda ejecutar el código en .Net Core 3.1, con sus
     respectivos paquetes Nuget, pueden ser Visual Studio 2019 o Rider 2019+.
