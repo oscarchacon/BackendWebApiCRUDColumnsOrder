@@ -9,7 +9,7 @@ WebAPI Template, que contiene funciones y métodos necesarios para hacer un CRUD
 Tecnologías utilizadas: 
 ------------------------
 
--   Framework de desarrollo: .Net Core 3.1, Con librerías de clases con Net Standar 2.0
+-   Framework de desarrollo: .Net 5, Con librerías de clases con Net Standar 2.1
 
 -   Lenguaje Programación C\#.
 
@@ -33,11 +33,11 @@ Tecnologías utilizadas:
 Requisitos:
 -----------
 
--   Tener instalado .Net Core 3.1 SDK 3.1.201, puede ser obtenido desde:
-    [https://dotnet.microsoft.com/download/dotnet-core/3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+-   Tener instalado .Net 5.0.5 SDK 5.0.202, puede ser obtenido desde:
+    [https://dotnet.microsoft.com/download/dotnet/5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 
--   Algún IDE que pueda ejecutar el código en .Net Core 3.1, con sus
-    respectivos paquetes Nuget, pueden ser Visual Studio 2019 o Rider 2019+.
+-   Algún IDE que pueda ejecutar el código en .Net 5, con sus
+    respectivos paquetes Nuget, pueden ser Visual Studio 2019 o Rider 2020+.
 
 -   Opcional: Tener en cuenta para ejecutar el Script, necesita Entity
     Framework Core.
