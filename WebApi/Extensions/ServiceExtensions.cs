@@ -64,7 +64,7 @@ namespace WebApi.Extensions
         public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<RepositoryContext>(option =>
-                option.UseSqlite("Data Source=./storage/DBstorage.db"));
+                option.UseInMemoryDatabase("BackendWebApiCRUDColumnsOrderDb"));
         }
 
         /// <summary>

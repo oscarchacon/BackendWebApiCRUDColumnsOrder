@@ -1,0 +1,16 @@
+{
+  "entities": [
+    {
+      "name": "Entity One",
+      "description": "Seeded record 1"
+    },
+    {
+      "name": "Entity Two",
+      "description": "Seeded record 2"
+    },
+    {
+      "name": "Entity Three",
+      "description": "Seeded record 3"
+    }
+  ]
+}

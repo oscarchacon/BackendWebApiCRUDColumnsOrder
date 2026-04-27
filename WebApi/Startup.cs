@@ -12,12 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebApi.Helpers;
 using WebApi.Extensions;
 
 namespace WebApi
 {
     /// <summary>
-    /// Clase de Configuración de la API
+    /// Clase de Configuraciï¿½n de la API
     /// </summary>
     public class Startup
     {
@@ -82,9 +83,7 @@ namespace WebApi
                 endpoints.MapControllers();
             });
 
-            // TODO: Utilizar si se necesita rehacer la Base de datos.
-            repositoryContext.Database.EnsureDeleted();
-            repositoryContext.Database.EnsureCreated();
+            InMemoryDatabaseInitializer.Initialize(repositoryContext, Configuration, env.ContentRootPath);
 
         }
     }
