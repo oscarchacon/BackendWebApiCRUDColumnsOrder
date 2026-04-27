@@ -36,11 +36,11 @@ public class EntitiesBR
     /// <param name="columnName">Nombre de columna a Ordenar</param>
     /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
     /// <returns>Lista de Datos de Entidad</returns>
-    public async Task<IEnumerable<Entity>> GetAllEntities(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
+    public async Task<IEnumerable<EntityDTO>> GetAllEntities(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
     {
 
         var entities = await this.repository.Entity.GetAllAsync(page, pageSize, columnName, orderDesc);
-        return entities;
+        return this.mapper.Map<IEnumerable<EntityDTO>>(entities);
 
     }
 
@@ -52,11 +52,11 @@ public class EntitiesBR
     /// <param name="columnName">Nombre de columna a Ordenar</param>
     /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
     /// <returns>Objeto de Paginación con Lista de Datos d Entidad</returns>
-    public async Task<IPagedResult<Entity>> GetAllEntitiesPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
+    public async Task<IPagedResult<EntityDTO>> GetAllEntitiesPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
     {
 
         var entities = await this.repository.Entity.GetAllPagedAsync(page, pageSize, columnName, orderDesc);
-        return entities;
+        return this.mapper.Map<IPagedResult<EntityDTO>>(entities);
 
     }
 
@@ -65,12 +65,12 @@ public class EntitiesBR
     /// </summary>
     /// <param name="companyId">Id de Entidad</param>
     /// <returns>Objeto Entidad</returns>
-    public async Task<Entity> GetEntityById(Guid entityId)
+    public async Task<EntityDTO> GetEntityById(Guid entityId)
     {
 
         var company = await this.repository.Entity.GetByIdAsync(entityId);
 
-        return company;
+        return this.mapper.Map<EntityDTO>(company);
 
     }
 

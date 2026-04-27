@@ -2,7 +2,7 @@ using System;
 
 namespace Entities.DTO;
 
-public class EntityDTO
+public class EntityDTO : IEntity
 {
     public Guid Id { get; set; }
 
