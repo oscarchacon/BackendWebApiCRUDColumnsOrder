@@ -55,19 +55,14 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public IActionResult Get(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
+        public async Task<IActionResult> Get(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
         {
-            try
-            {
-                var entities = this.entitiesBR.GetAllEntities(page, pageSize, columnName, orderDesc);
-                if (entities.IsListObjectNull() || entities.IsEmptyListObject()) { return NoContent(); }
 
-                return Ok(entities);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Message = $"Internal server error {ex.Message}" });
-            }
+            var entities = await this.entitiesBR.GetAllEntities(page, pageSize, columnName, orderDesc);
+            if (entities.IsListObjectNull() || entities.IsEmptyListObject()) { return NoContent(); }
+
+            return Ok(entities);
+
         }
 
 
@@ -90,20 +85,13 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public IActionResult GetPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
+        public async Task<IActionResult> GetPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
         {
-            try
-            {
-                var entities = this.entitiesBR.GetAllEntitiesPaged(page, pageSize, columnName, orderDesc);
-                if (entities.IsNull()) { return NoContent(); }
-                if (entities.Results.IsListObjectNull() || entities.Results.IsEmptyListObject()) { return NoContent(); }
+            var entities = await this.entitiesBR.GetAllEntitiesPaged(page, pageSize, columnName, orderDesc);
+            if (entities.IsNull()) { return NoContent(); }
+            if (entities.Results.IsListObjectNull() || entities.Results.IsEmptyListObject()) { return NoContent(); }
 
-                return Ok(entities);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Message = $"Internal server error {ex.Message}" });
-            }
+            return Ok(entities);
         }
 
         /// <summary>
@@ -116,25 +104,20 @@ namespace WebApi.Controllers
         /// <response code="401">Sin Autorización</response>   
         /// <response code="403">Sin Privilegios</response>   
         /// <response code="500">Error Interno del servidor</response>   
-        [HttpGet("{id}", Name = "EntityById")]
+        [HttpGet("{id:guid}", Name = "EntityById")]
         [ProducesResponseType(typeof(Entity), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public IActionResult Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            try
-            {
-                var entity = this.entitiesBR.GetEntityById(id);
-                if (entity.IsEmptyObject() || entity.IsObjectNull()) { return NoContent(); }
 
-                return Ok(entity);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Message = $"Internal server error {ex.Message}" });
-            }
+            var entity = await this.entitiesBR.GetEntityById(id);
+            if (entity.IsEmptyObject() || entity.IsObjectNull()) { return NoContent(); }
+
+            return Ok(entity);
+
         }
 
         /// <summary>
@@ -153,22 +136,17 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public IActionResult Post([FromBody]EntityRegisterModel entityRegister)
+        public async Task<IActionResult> Post([FromBody] EntityRegisterModel entityRegister)
         {
             if (entityRegister.IsObjectNull()) { return BadRequest(new ResponseMessage { Message = "Entity object is null" }); }
             if (!ModelState.IsValid) { return BadRequest(new ResponseMessage { Message = "Invalid model object" }); }
-            try
-            {
-                var entity = mapper.Map<Entity>(entityRegister);
-                this.entitiesBR.CreateEntity(entity);
-                if (entity.IsEmptyObject()) { return BadRequest(new ResponseMessage { Message = "Entity Object is not Created" }); }
 
-                return CreatedAtRoute("EntityById", new { id = entity.Id }, entity);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Message = $"Internal server error: {ex.Message}" });
-            }
+            var entity = mapper.Map<Entity>(entityRegister);
+            await this.entitiesBR.CreateEntity(entity);
+            if (entity.IsEmptyObject()) { return BadRequest(new ResponseMessage { Message = "Entity Object is not Created" }); }
+
+            return CreatedAtRoute("EntityById", new { id = entity.Id }, entity);
+
         }
 
         /// <summary>
@@ -183,31 +161,26 @@ namespace WebApi.Controllers
         /// <response code="403">Sin Privilegios</response>   
         /// <response code="404">Datos no encontrados</response>   
         /// <response code="500">Error Interno del servidor</response>   
-        [HttpPut("{id}/Edit")]
+        [HttpPut("{id:guid}/Edit")]
         [ProducesResponseType(typeof(Entity), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public IActionResult Put(Guid id, [FromBody]Entity entity)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Entity entity)
         {
-            try
-            {
-                if (id.Equals(Guid.Empty)) { return BadRequest(new ResponseMessage { Message = "Id is Empty" }); }
-                if (entity.IsObjectNull()) { return BadRequest(new ResponseMessage { Message = "Entity Object is Null" }); }
-                if (!ModelState.IsValid) { return BadRequest(new ResponseMessage { Message = "Invalid model object" }); }
 
-                bool secuence = this.entitiesBR.UpdateEntity(id, entity);
+            if (id.Equals(Guid.Empty)) { return BadRequest(new ResponseMessage { Message = "Id is Empty" }); }
+            if (entity.IsObjectNull()) { return BadRequest(new ResponseMessage { Message = "Entity Object is Null" }); }
+            if (!ModelState.IsValid) { return BadRequest(new ResponseMessage { Message = "Invalid model object" }); }
 
-                if (!secuence) { return NotFound(); }
+            bool secuence = await this.entitiesBR.UpdateEntity(id, entity);
 
-                return Ok(entity);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Message = $"Internal server error: {ex.Message}" });
-            }
+            if (!secuence) { return NotFound(); }
+
+            return Ok(entity);
+
         }
 
         /// <summary>
@@ -222,7 +195,7 @@ namespace WebApi.Controllers
         /// <response code="404">Datos no encontrados</response>   
         /// <response code="405">No se permite borrar registro</response>   
         /// <response code="500">Error Interno del servidor</response>
-        [HttpDelete("{id}/Delete")]
+        [HttpDelete("{id:guid}/Delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -230,23 +203,16 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status405MethodNotAllowed)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            try
-            {
-                if (id.Equals(Guid.Empty)) { return BadRequest(new ResponseMessage { Message = "Id is Empty" }); }
+            if (id.Equals(Guid.Empty)) { return BadRequest(new ResponseMessage { Message = "Id is Empty" }); }
 
-                var secuence = this.entitiesBR.DeleteEntity(id);
-                if (secuence.IsObjectNull()) { return NotFound(); }
+            var secuence = await this.entitiesBR.DeleteEntity(id);
+            if (secuence.IsObjectNull()) { return NotFound(); }
 
-                if (!(bool)secuence) { return StatusCode(StatusCodes.Status405MethodNotAllowed, new ResponseMessage { Message = "Not allowed to delete Entity registry." }); }
+            if (!(bool)secuence) { return StatusCode(StatusCodes.Status405MethodNotAllowed, new ResponseMessage { Message = "Not allowed to delete Entity registry." }); }
 
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Message = $"Internal server error: {ex.Message}" });
-            }
+            return NoContent();
         }
     }
 }

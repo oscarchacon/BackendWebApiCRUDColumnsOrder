@@ -1,16 +1,22 @@
 {
-  "entities": [
+  "Entity": [
     {
-      "name": "Entity One",
-      "description": "Seeded record 1"
+      "Id": "0f734f22-3366-4f2d-902e-0bfd0cf5351d",
+      "Name": "Entidad Inicial 1",
+      "Description": "Registro base cargado desde seed-data",
+      "RegisterDate": "2026-01-10T12:00:00Z"
     },
     {
-      "name": "Entity Two",
-      "description": "Seeded record 2"
+      "Id": "9b07dd7d-c9b5-4bbc-b9b2-8b4db2f12542",
+      "Name": "Entidad Inicial 2",
+      "Description": "Segundo registro de ejemplo para pruebas",
+      "RegisterDate": "2026-01-11T12:00:00Z"
     },
     {
-      "name": "Entity Three",
-      "description": "Seeded record 3"
+      "Id": "c8b58fd6-9ca1-4cb1-ba8e-5eff7754f553",
+      "Name": "Entidad Inicial 3",
+      "Description": "Tercer registro de ejemplo",
+      "RegisterDate": "2026-01-12T12:00:00Z"
     }
   ]
 }

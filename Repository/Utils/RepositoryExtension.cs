@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Repository.Utils
@@ -44,6 +45,27 @@ namespace Repository.Utils
             return result;
         }
 
+        public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query,
+                                         int page, int pageSize, CancellationToken cancellationToken = default) where T : class
+        {
+            var result = new PagedResult<T>
+            {
+                CurrentPage = page,
+                PageSize = pageSize,
+                RowCount = await query.CountAsync(cancellationToken)
+            };
+
+
+            var pageCount = (double)result.RowCount / pageSize;
+            result.PageCount = (int)Math.Ceiling(pageCount);
+
+            var skip = (page - 1) * pageSize;
+            var results = await query.Skip(skip).Take(pageSize).ToListAsync(cancellationToken);
+            result.Results = results;
+
+            return result;
+        }
+
         /// <summary>
         /// Funcion que permite obtener una lista de objetos páginada para el repositorio que lo necesite
         /// </summary>
@@ -57,6 +79,24 @@ namespace Repository.Utils
         {
             var skip = (page - 1) * pageSize;
             var results = query.Skip(skip).Take(pageSize).AsEnumerable().ToList();
+
+            return results;
+        }
+
+        /// <summary>
+        /// Funcion asíncrona que permite obtener una lista de objetos páginada para el repositorio que lo necesite
+        /// </summary>
+        /// <typeparam name="T">Clase de Entidad de Repositorio</typeparam>
+        /// <param name="query">Query, definida como Queryable</param>
+        /// <param name="page">Página actual</param>
+        /// <param name="pageSize">Elementos por Página</param>
+        /// <param name="cancellationToken">Token de cancelación</param>
+        /// <returns>Lista de objetos páginada</returns>
+        public static async Task<IEnumerable<T>> GetPagedListAsync<T>(this IQueryable<T> query,
+                                         int page, int pageSize, CancellationToken cancellationToken = default) where T : class
+        {
+            var skip = (page - 1) * pageSize;
+            var results = await query.Skip(skip).Take(pageSize).ToListAsync(cancellationToken);
 
             return results;
         }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Repository.Base
@@ -53,6 +54,17 @@ namespace Repository.Base
             this.RepositoryContext.Set<T>().Add(entity);
         }
 
+
+        /// <summary>
+        /// Método asíncrono que permite insertar un objeto con los datos de la entidad
+        /// </summary>
+        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="cancellationToken">Token de cancelación</param>
+        public async Task CreateAsync(T entity, CancellationToken cancellationToken = default)
+        {
+            await this.RepositoryContext.Set<T>().AddAsync(entity, cancellationToken);
+        }
+
         /// <summary>
         /// Método que permite actualizar los datos del objeto de entidad
         /// </summary>
@@ -61,6 +73,7 @@ namespace Repository.Base
         {
             this.RepositoryContext.Set<T>().Update(entity);
         }
+        
 
         /// <summary>
         /// Método que permite eliminar los datos de un objeto de entidad

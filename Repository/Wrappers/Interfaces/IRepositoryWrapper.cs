@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Repository.Wrappers.Interfaces
 {
@@ -13,5 +14,7 @@ namespace Repository.Wrappers.Interfaces
         IEntityRepository Entity { get; }
 
         void Save();
+
+        Task SaveAsync();
     }
 }

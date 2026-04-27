@@ -1,12 +1,12 @@
 # AGENTS.md
 
 ## Agent profile for this repo
-- Work as a .NET 5+ expert: ASP.NET Core, EF Core, layering, and dependency injection decisions should follow modern .NET practices.
+- Work as a .NET 6+ expert: ASP.NET Core, EF Core, layering, and dependency injection decisions should follow modern .NET practices.
 - Treat current target frameworks as a baseline, not a permanent standard; keep changes upgrade-friendly for future framework updates.
 
 ## Scope and stack
 - Solution entrypoint: `BackendWebApiCRUDColumnsOrder.sln`.
-- Current project targets (verify before major changes; these are expected to evolve): `WebApi` (`net5.0`), `BusinesRules` (`netstandard2.1`), `Repository` (`netstandard2.1`), `Contracts` (`netstandard2.1`), `Entities` (`netstandard2.1`).
+- Current project targets (verify before major changes; these are expected to evolve): `WebApi` (`net8.0`), `BusinesRules` (`net8.0`), `Repository` (`net8.0`), `Contracts` (`net8.0`), `Entities` (`net8.0`).
 - Dependency flow is layered: `WebApi -> BusinesRules -> Repository -> Contracts -> Entities`.
 
 ## Verified developer commands

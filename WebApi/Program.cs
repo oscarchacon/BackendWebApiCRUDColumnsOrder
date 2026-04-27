@@ -1,38 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Entities;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using WebApi.Extensions;
+using WebApi.Helpers;
 
-namespace WebApi
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureCors();
+builder.Services.ConfigureIISIntegration();
+builder.Services.ConfigureDbContext(builder.Configuration);
+builder.Services.ConfigureRepositoriesWrappers();
+builder.Services.ConfigureBusinessRules();
+builder.Services.ConfigureControllersWithJson();
+builder.Services.AddMapper();
+builder.Services.ConfigureSwaggerGen();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
 {
-    /// <summary>
-    /// Clase Principal, contiene el Main
-    /// </summary>
-    public class Program
-    {
-        /// <summary>
-        /// Función Main
-        /// </summary>
-        /// <param name="args">Argumentos del Main</param>
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        /// <summary>
-        /// Función Creadora del Host
-        /// </summary>
-        /// <param name="args">Argumentos</param>
-        /// <returns>Ensamblado del Host</returns>
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("CorsPolicy");
+app.UseAuthorization();
+app.UseSwaggerDocumentation();
+app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var repositoryContext = scope.ServiceProvider.GetRequiredService<RepositoryContext>();
+    InMemoryDatabaseInitializer.Initialize(repositoryContext, app.Configuration, app.Environment.ContentRootPath);
+}
+
+app.Run();

@@ -5,6 +5,7 @@ using Repository.Wrappers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Repository.Wrappers
 {
@@ -20,10 +21,7 @@ namespace Repository.Wrappers
         {
             get
             {
-                if (this.entity == null)
-                {
-                    this.entity = new EntityRepository(this.repositoryContext);
-                }
+                this.entity ??= new EntityRepository(this.repositoryContext);
                 return this.entity;
             }
         }
@@ -31,6 +29,11 @@ namespace Repository.Wrappers
         public void Save()
         {
             this.repositoryContext.SaveChanges();
+        }
+
+        public async Task SaveAsync()
+        {
+            await this.repositoryContext.SaveChangesAsync();
         }
 
         public RepositoryWrapper(RepositoryContext repositoryContext)

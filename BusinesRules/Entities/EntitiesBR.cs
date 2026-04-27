@@ -7,6 +7,7 @@ using Repository.Wrappers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BusinesRules.Entities
 {
@@ -31,16 +32,16 @@ namespace BusinesRules.Entities
         /// <param name="columnName">Nombre de columna a Ordenar</param>
         /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
         /// <returns>Lista de Datos de Entidad</returns>
-        public IEnumerable<Entity> GetAllEntities(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
+        public async Task<IEnumerable<Entity>> GetAllEntities(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
         {
             try
             {
-                var entities = this.repository.Entity.GetAll(page, pageSize, columnName, orderDesc);
+                var entities = await this.repository.Entity.GetAllAsync(page, pageSize, columnName, orderDesc);
                 return entities;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
 
@@ -52,35 +53,35 @@ namespace BusinesRules.Entities
         /// <param name="columnName">Nombre de columna a Ordenar</param>
         /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
         /// <returns>Objeto de Paginación con Lista de Datos d Entidad</returns>
-        public IPagedResult<Entity> GetAllEntitiesPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
+        public async Task<IPagedResult<Entity>> GetAllEntitiesPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
         {
             try
             {
-                var entities = this.repository.Entity.GetAllPaged(page, pageSize, columnName, orderDesc);
+                var entities = await this.repository.Entity.GetAllPagedAsync(page, pageSize, columnName, orderDesc);
                 return entities;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
 
         /// <summary>
-        /// Función que busca una Entidad por su Id
+        /// Función que busca una Entidad por su Id de forma asíncrona
         /// </summary>
         /// <param name="companyId">Id de Entidad</param>
         /// <returns>Objeto Entidad</returns>
-        public Entity GetEntityById(Guid entityId)
+        public async Task<Entity> GetEntityById(Guid entityId)
         {
             try
             {
-                var company = this.repository.Entity.GetById(entityId);
+                var company = await this.repository.Entity.GetByIdAsync(entityId);
 
                 return company;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
 
@@ -89,17 +90,17 @@ namespace BusinesRules.Entities
         /// </summary>
         /// <param name="entityRegister">Objeto Entidad para Registrar</param>
         /// <returns>Objeto Entidad creado</returns>
-        public void CreateEntity(Entity entity)
+        public async Task CreateEntity(Entity entity)
         {
             try
             {
                 entity.RegisterDate = DateTime.UtcNow;
-                this.repository.Entity.CreateEntity(entity);
-                this.repository.Save();
+                await this.repository.Entity.CreateEntityAsync(entity);
+                await this.repository.SaveAsync();
             }
             catch (Exception ex)
             {                
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
 
@@ -109,15 +110,15 @@ namespace BusinesRules.Entities
         /// <param name="entityId">Id de Entidad</param>
         /// <param name="entityUpdated">Objeto Entidad con los nuevos datos</param>
         /// <returns>Booleano si se realizó la acción</returns>
-        public bool UpdateEntity(Guid entityId, Entity entityUpdated)
+        public async Task<bool> UpdateEntity(Guid entityId, Entity entityUpdated)
         {
             try
             {
-                var dbEntity = this.repository.Entity.GetById(entityId);
-                if (dbEntity.IsEmptyObject()) { return false; }
+                var dbEntity = await this.repository.Entity.GetByIdAsync(entityId);
+                if (dbEntity.IsEmptyObject()) { throw new NotFoundException("Entity not found"); }
 
                 this.repository.Entity.UpdateEntity(dbEntity, entityUpdated);
-                this.repository.Save();
+                await this.repository.SaveAsync();
 
                 entityUpdated.Id = entityId;
 
@@ -125,7 +126,7 @@ namespace BusinesRules.Entities
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
 
@@ -134,7 +135,7 @@ namespace BusinesRules.Entities
         /// </summary>
         /// <param name="entityId">Id de Entidad</param>
         /// <returns>Objeto Booleano si se realizó la acción</returns>
-        public object DeleteEntity(Guid entityId)
+        public async Task<object> DeleteEntity(Guid entityId)
         {
             try
             {
@@ -143,17 +144,17 @@ namespace BusinesRules.Entities
 
 
                 this.repository.Entity.DeleteEntity(dbEntity);
-                this.repository.Save();
+                await this.repository.SaveAsync();
 
                 return true;
             }
             catch (ArgumentNullException anex)
             {
-                throw new Exception(anex.Message);
+                throw anex;
             }
             catch (Exception ex)
             {                
-                throw new Exception(ex.Message);
+                throw ex;
             }
         }
     }
