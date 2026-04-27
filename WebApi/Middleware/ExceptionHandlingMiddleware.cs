@@ -1,10 +1,16 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using BusinesRules.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace WebApi.Middleware;
 
+/// <summary>
+/// Middleware for handling exceptions in the HTTP request pipeline.
+/// </summary>
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
@@ -39,16 +45,24 @@ public class ExceptionHandlingMiddleware
             _logger.LogError(
                 exception, "Exception occurred: {Message}", exception.Message);
 
-            var problemDetails = new ProblemDetails
+            var response = context.Response;
+            response.ContentType = "application/json";
+
+            response.StatusCode = exception switch
             {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Server Error"
+                NotFoundException => (int)HttpStatusCode.NotFound,
+                BadRequestException => (int)HttpStatusCode.BadRequest,
+                NotAllowedException => (int)HttpStatusCode.MethodNotAllowed,
+                _ => (int)HttpStatusCode.InternalServerError,
             };
 
-            context.Response.StatusCode =
-                StatusCodes.Status500InternalServerError;
-
-            await context.Response.WriteAsJsonAsync(problemDetails);
+            var responseError = new
+            {
+                estado = response.StatusCode,
+                mensaje = exception?.Message,
+                error = exception?.ToString()
+            };
+            await response.WriteAsync(JsonConvert.SerializeObject(responseError));
         }
     }
 }

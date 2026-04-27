@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Helpers;
+using WebApi.Middleware;
 
 namespace WebApi.Extensions
 {
@@ -31,6 +32,15 @@ namespace WebApi.Extensions
             });
 
 
+        }
+
+        /// <summary>
+        /// Función que permite configurar los middlewares a usar con la App
+        /// </summary>
+        /// <param name="app"></param>
+        public static void UseMiddlewares(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
         }
     }
 }
