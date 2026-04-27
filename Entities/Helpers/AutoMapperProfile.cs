@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Entities.DTO;
 using Entities.Helpers.Entities;
 using Entities.Models;
 using System;
@@ -18,6 +19,7 @@ namespace Entities.Helpers
         public AutoMapperProfile()
         {
             this.CreateMap<EntityRegisterModel, Entity>();
+            this.CreateMap<EntityDTO, Entity>().ReverseMap();
         }
     }
 }

@@ -109,7 +109,7 @@ namespace Repository.Utils
         /// <param name="page">Página actual</param>
         /// <param name="pageSize">Elementos por Página</param>
         /// <returns>Objeto de Paginación con lista de objetos</returns>
-        public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query,
+        public static async Task<PagedResult<T>> GetPagedAsAsync<T>(this IQueryable<T> query,
                                          int page, int pageSize) where T : class
         {
             var result = new PagedResult<T>
@@ -128,24 +128,6 @@ namespace Repository.Utils
             result.Results = await Task.FromResult(results.ToList());
 
             return result;
-        }
-
-        /// <summary>
-        /// Funcion Asíncrona que permite obtener una lista de objetos páginada para el repositorio que lo necesite
-        /// </summary>
-        /// <typeparam name="T">Clase de Entidad de Repositorio</typeparam>
-        /// <param name="query">Query, definida como Queryable</param>
-        /// <param name="page">Página actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <returns>Lista de objetos páginada</returns>
-        public static async Task<IEnumerable<T>> GetPagedListAsync<T>(this IQueryable<T> query,
-                                         int page, int pageSize) where T : class
-        {
-            var skip = (page - 1) * pageSize;
-            var resultsEnumerable = query.Skip(skip).Take(pageSize).AsEnumerable();
-            var results = await Task.FromResult(resultsEnumerable.ToList());
-
-            return results;
         }
     }
 }

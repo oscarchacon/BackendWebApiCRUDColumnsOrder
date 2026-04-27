@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BusinesRules.Entities;
+using Entities.DTO;
 using Entities.Helpers.Entities;
 using Entities.Models;
 using Entities.Utils;
@@ -162,7 +163,7 @@ namespace WebApi.Controllers
         /// <response code="404">Datos no encontrados</response>   
         /// <response code="500">Error Interno del servidor</response>   
         [HttpPut("{id:guid}/Edit")]
-        [ProducesResponseType(typeof(Entity), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EntityDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -175,11 +176,11 @@ namespace WebApi.Controllers
             if (entity.IsObjectNull()) { return BadRequest(new ResponseMessage { Message = "Entity Object is Null" }); }
             if (!ModelState.IsValid) { return BadRequest(new ResponseMessage { Message = "Invalid model object" }); }
 
-            bool secuence = await this.entitiesBR.UpdateEntity(id, entity);
+            var secuence = await this.entitiesBR.UpdateEntity(id, entity);
 
-            if (!secuence) { return NotFound(); }
+            if (secuence.IsObjectNull()) { return NotFound(); }
 
-            return Ok(entity);
+            return Ok(secuence);
 
         }
 
@@ -207,10 +208,7 @@ namespace WebApi.Controllers
         {
             if (id.Equals(Guid.Empty)) { return BadRequest(new ResponseMessage { Message = "Id is Empty" }); }
 
-            var secuence = await this.entitiesBR.DeleteEntity(id);
-            if (secuence.IsObjectNull()) { return NotFound(); }
-
-            if (!(bool)secuence) { return StatusCode(StatusCodes.Status405MethodNotAllowed, new ResponseMessage { Message = "Not allowed to delete Entity registry." }); }
+            await this.entitiesBR.DeleteEntity(id);
 
             return NoContent();
         }

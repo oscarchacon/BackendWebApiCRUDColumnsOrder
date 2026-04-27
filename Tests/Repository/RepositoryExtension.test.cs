@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Repository.Utils;
 
 namespace Tests.Repository;
@@ -5,9 +6,9 @@ namespace Tests.Repository;
 public class RepositoryExtensionTests
 {
     [Fact]
-    public void GetPaged_WhenCalled_ReturnsExpectedPageMetadataAndRows()
+    public void GetPaged_WhenCalled_ReturnsExpectedMetadataAndRows()
     {
-        var source = Enumerable.Range(1, 10).Select(value => new SampleRow { Value = value }).AsQueryable();
+        var source = Enumerable.Range(1, 10).Select(v => new SampleRow { Value = v }).AsQueryable();
 
         var result = source.GetPaged(page: 2, pageSize: 3);
 
@@ -15,22 +16,65 @@ public class RepositoryExtensionTests
         Assert.Equal(3, result.PageSize);
         Assert.Equal(10, result.RowCount);
         Assert.Equal(4, result.PageCount);
-        Assert.Equal(new[] { 4, 5, 6 }, result.Results.Select(row => row.Value).ToArray());
+        Assert.Equal(new[] { 4, 5, 6 }, result.Results.Select(x => x.Value).ToArray());
     }
 
     [Fact]
-    public void GetPagedList_WhenCalled_ReturnsOnlyRequestedSlice()
+    public async Task GetPagedAsync_WhenCalled_ReturnsExpectedMetadataAndRows()
     {
-        var source = Enumerable.Range(1, 8).Select(value => new SampleRow { Value = value }).AsQueryable();
+        using var context = BuildContext();
+        await SeedAsync(context, 7);
+        var source = context.SampleRows.OrderBy(x => x.Value);
 
-        var result = source.GetPagedList(page: 3, pageSize: 2).ToList();
+        var result = await source.GetPagedAsync(page: 2, pageSize: 3);
 
-        Assert.Equal(2, result.Count);
-        Assert.Equal(new[] { 5, 6 }, result.Select(row => row.Value).ToArray());
+        Assert.Equal(2, result.CurrentPage);
+        Assert.Equal(3, result.PageSize);
+        Assert.Equal(7, result.RowCount);
+        Assert.Equal(3, result.PageCount);
+        Assert.Equal(new[] { 4, 5, 6 }, result.Results.Select(x => x.Value).ToArray());
+    }
+
+    [Fact]
+    public async Task GetPagedListAsync_WhenCalled_ReturnsOnlyRequestedSlice()
+    {
+        using var context = BuildContext();
+        await SeedAsync(context, 9);
+        var source = context.SampleRows.OrderBy(x => x.Value);
+
+        var result = (await source.GetPagedListAsync(page: 3, pageSize: 2)).ToList();
+
+        Assert.Equal(new[] { 5, 6 }, result.Select(x => x.Value).ToArray());
     }
 
     private sealed class SampleRow
     {
+        public int Id { get; set; }
         public int Value { get; set; }
+    }
+
+    private sealed class TestPagingContext : DbContext
+    {
+        public TestPagingContext(DbContextOptions<TestPagingContext> options) : base(options)
+        {
+        }
+
+        public DbSet<SampleRow> SampleRows => Set<SampleRow>();
+    }
+
+    private static TestPagingContext BuildContext()
+    {
+        var options = new DbContextOptionsBuilder<TestPagingContext>()
+            .UseInMemoryDatabase($"repository-extension-tests-{Guid.NewGuid()}")
+            .Options;
+
+        return new TestPagingContext(options);
+    }
+
+    private static async Task SeedAsync(TestPagingContext context, int count)
+    {
+        var rows = Enumerable.Range(1, count).Select(v => new SampleRow { Value = v });
+        await context.SampleRows.AddRangeAsync(rows);
+        await context.SaveChangesAsync();
     }
 }

@@ -8,22 +8,23 @@ namespace Tests.Repository;
 public class EntityRepositoryTests
 {
     [Fact]
-    public void GetAll_WhenSortingByNameDescending_ReturnsSortedRows()
+    public async Task GetAllAsync_WhenOrderedByNameDescending_ReturnsSortedData()
     {
         using var context = BuildContext();
         Seed(context,
             new Entity { Id = Guid.NewGuid(), Name = "Alpha", Description = "A", RegisterDate = DateTime.UtcNow },
             new Entity { Id = Guid.NewGuid(), Name = "Gamma", Description = "G", RegisterDate = DateTime.UtcNow },
             new Entity { Id = Guid.NewGuid(), Name = "Beta", Description = "B", RegisterDate = DateTime.UtcNow });
+
         var repository = new EntityRepository(context);
 
-        var result = repository.GetAll(columnName: "Name", orderDesc: true).ToList();
+        var result = (await repository.GetAllAsync(columnName: "Name", orderDesc: true)).ToList();
 
-        Assert.Equal(new[] { "Gamma", "Beta", "Alpha" }, result.Select(entity => entity.Name).ToArray());
+        Assert.Equal(new[] { "Gamma", "Beta", "Alpha" }, result.Select(x => x.Name).ToArray());
     }
 
     [Fact]
-    public void GetAllPaged_WhenPageAndSizeProvided_ReturnsExpectedPage()
+    public async Task GetAllPagedAsync_WhenPageRequested_ReturnsExpectedPageData()
     {
         using var context = BuildContext();
         Seed(context,
@@ -31,52 +32,66 @@ public class EntityRepositoryTests
             new Entity { Id = Guid.NewGuid(), Name = "B", Description = "B", RegisterDate = DateTime.UtcNow },
             new Entity { Id = Guid.NewGuid(), Name = "C", Description = "C", RegisterDate = DateTime.UtcNow },
             new Entity { Id = Guid.NewGuid(), Name = "D", Description = "D", RegisterDate = DateTime.UtcNow });
+
         var repository = new EntityRepository(context);
 
-        var result = repository.GetAllPaged(page: 2, pageSize: 2, columnName: "Name");
+        var result = await repository.GetAllPagedAsync(page: 2, pageSize: 2, columnName: "Name");
 
         Assert.Equal(4, result.RowCount);
         Assert.Equal(2, result.CurrentPage);
         Assert.Equal(2, result.PageSize);
-        Assert.Equal(new[] { "C", "D" }, result.Results.Select(entity => entity.Name).ToArray());
+        Assert.Equal(new[] { "C", "D" }, result.Results.Select(x => x.Name).ToArray());
     }
 
     [Fact]
-    public void GetById_WhenEntityDoesNotExist_ReturnsEmptyEntity()
+    public async Task GetByIdAsync_WhenNotFound_ReturnsEmptyEntity()
     {
         using var context = BuildContext();
         var repository = new EntityRepository(context);
 
-        var result = repository.GetById(Guid.NewGuid());
+        var result = await repository.GetByIdAsync(Guid.NewGuid());
 
         Assert.NotNull(result);
         Assert.Equal(Guid.Empty, result.Id);
     }
 
     [Fact]
-    public void UpdateEntity_WhenCalled_MapsNameAndDescription()
+    public void GetAll_WhenCalled_ThrowsNotImplementedException()
     {
         using var context = BuildContext();
-        var id = Guid.NewGuid();
-        var current = new Entity { Id = id, Name = "Current", Description = "Current description", RegisterDate = DateTime.UtcNow };
-        Seed(context, current);
-        context.ChangeTracker.Clear();
         var repository = new EntityRepository(context);
 
-        var dbEntity = repository.GetById(id);
-        var updated = new Entity { Name = "Updated", Description = "Updated description", RegisterDate = DateTime.UtcNow.AddDays(2) };
-        repository.UpdateEntity(dbEntity, updated);
-        context.SaveChanges();
+        Assert.Throws<NotImplementedException>(() => repository.GetAll());
+    }
 
-        var persisted = context.Entities.Single(entity => entity.Id == id);
-        Assert.Equal("Updated", persisted.Name);
-        Assert.Equal("Updated description", persisted.Description);
+    [Fact]
+    public void GetAllPaged_WhenCalled_ThrowsNotImplementedException()
+    {
+        using var context = BuildContext();
+        var repository = new EntityRepository(context);
+
+        Assert.Throws<NotImplementedException>(() => repository.GetAllPaged());
+    }
+
+    [Fact]
+    public async Task CreateEntityAsync_WhenCalled_AddsEntityWithGeneratedId()
+    {
+        using var context = BuildContext();
+        var repository = new EntityRepository(context);
+        var entity = new Entity { Name = "Created", Description = "Created row", RegisterDate = DateTime.UtcNow };
+
+        await repository.CreateEntityAsync(entity);
+        await context.SaveChangesAsync();
+
+        var saved = await context.Entities.SingleAsync();
+        Assert.NotEqual(Guid.Empty, saved.Id);
+        Assert.Equal("Created", saved.Name);
     }
 
     private static RepositoryContext BuildContext()
     {
         var options = new DbContextOptionsBuilder<RepositoryContext>()
-            .UseInMemoryDatabase($"repo-tests-{Guid.NewGuid()}")
+            .UseInMemoryDatabase($"entity-repository-tests-{Guid.NewGuid()}")
             .Options;
 
         return new RepositoryContext(options);
