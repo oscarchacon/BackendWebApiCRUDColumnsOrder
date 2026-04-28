@@ -5,16 +5,16 @@ using System.Text;
 namespace Entities.Utils
 {
     /// <summary>
-    /// Clase de Útilidad para las propiedades de las Entidades.
+    /// Utility class for entity properties.
     /// </summary>
     public static class EntityProperties
     {
         /// <summary>
-        /// Método que permite saber si contiene un propiedad por su nombre
+        /// Method that determines if a property exists by its name.
         /// </summary>
-        /// <param name="typeEntity">Tipo de Objeto de Entidad </param>
-        /// <param name="propertyName">Nombre de Propiedad</param>
-        /// <returns>Booleano si contiene la propiedad</returns>
+        /// <param name="typeEntity">Entity object type</param>
+        /// <param name="propertyName">Property name</param>
+        /// <returns>Returns true if the property exists</returns>
         public static bool ContainsPropertyName(Type typeEntity, string propertyName)
         {
             try

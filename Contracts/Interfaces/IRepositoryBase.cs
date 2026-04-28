@@ -8,44 +8,44 @@ using System.Threading.Tasks;
 namespace Contracts.Interfaces
 {
     /// <summary>
-    /// Interface de Base para ser implementada con los métodos CRUD usados para las clases de entidades
+    /// Base interface to be implemented with CRUD methods used for entity classes.
     /// </summary>
-    /// <typeparam name="T">Clase Parametro</typeparam>
+    /// <typeparam name="T">Parameter class</typeparam>
     public interface IRepositoryBase<T>
     {
         /// <summary>
-        /// Método de implementación que obtiene todos los datos de la entidad
+        /// Implementation method that obtains all entity data.
         /// </summary>
-        /// <returns>Objeto Query Linq</returns>
+        /// <returns>Linq Query object</returns>
         IQueryable<T> FindAll();
 
         /// <summary>
-        /// Método de implementación que obtiene los datos de la entidad por medio de una condición
+        /// Implementation method that obtains entity data based on a condition.
         /// </summary>
-        /// <param name="expression">Expresión de Condición</param>
-        /// <returns>Objeto Query Linq</returns>
+        /// <param name="expression">Condition expression</param>
+        /// <returns>Linq Query object</returns>
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
 
         /// <summary>
-        /// Método de implementación que permite insertar un objeto con los datos de la entidad
+        /// Implementation method that allows inserting an object with entity data.
         /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="entity">Entity object</param>
         void Create(T entity);
 
         /// <summary>
-        /// Método de implementación que permite actualizar los datos del objeto de entidad
+        /// Implementation method that allows updating entity object data.
         /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="entity">Entity object</param>
         void Update(T entity);
 
         /// <summary>
-        /// Método de implementación que permite eliminar los datos de un objeto de entidad
+        /// Implementation method that allows deleting an object's entity data.
         /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="entity">Entity object</param>
         void Delete(T entity);
 
         /// <summary>
-        /// Método Asíncrono de implementación que permite guardar los cambios CRUD
+        /// Asynchronous implementation method that allows saving CRUD changes.
         /// </summary>
         Task SaveAsync();
     }

@@ -9,24 +9,21 @@ using System.Threading.Tasks;
 
 namespace Repository.Utils
 {
-    // Using from: https://www.codingame.com/playgrounds/5363/paging-with-entity-framework-core
-    // And https://gunnarpeipman.com/net/ef-core-paging/
-
     /// <summary>
-    /// Clase de extensión para el uso dentro de las clases del repositorio
+    /// Extension class for use within repository classes.
     /// </summary>
     public static class RepositoryExtension
     {
         /// <summary>
-        /// Funcion que permite obtener un objeto de Páginación para el repositorio que lo necesite
+        /// Function that allows obtaining a pagination object for the repository that needs it.
         /// </summary>
-        /// <typeparam name="T">Clase de Entidad de Repositorio</typeparam>
-        /// <param name="query">Query, definida como Queryable</param>
-        /// <param name="page">Página actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <returns>Objeto de Paginación con lista de objetos</returns>
+        /// <typeparam name="T">Repository entity class</typeparam>
+        /// <param name="query">Query, defined as Queryable</param>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <returns>Pagination object with list of objects</returns>
         public static PagedResult<T> GetPaged<T>(this IQueryable<T> query,
-                                         int page, int pageSize) where T : class
+                                          int page, int pageSize) where T : class
         {
             var result = new PagedResult<T>
             {
@@ -34,7 +31,6 @@ namespace Repository.Utils
                 PageSize = pageSize,
                 RowCount = query.Count()
             };
-
 
             var pageCount = (double)result.RowCount / pageSize;
             result.PageCount = (int)Math.Ceiling(pageCount);
@@ -45,8 +41,17 @@ namespace Repository.Utils
             return result;
         }
 
+        /// <summary>
+        /// Asynchronous function that allows obtaining a pagination object for the repository that needs it.
+        /// </summary>
+        /// <typeparam name="T">Repository entity class</typeparam>
+        /// <param name="query">Query, defined as Queryable</param>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Pagination object with list of objects</returns>
         public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query,
-                                         int page, int pageSize, CancellationToken cancellationToken = default) where T : class
+                                          int page, int pageSize, CancellationToken cancellationToken = default) where T : class
         {
             var result = new PagedResult<T>
             {
@@ -54,7 +59,6 @@ namespace Repository.Utils
                 PageSize = pageSize,
                 RowCount = await query.CountAsync(cancellationToken)
             };
-
 
             var pageCount = (double)result.RowCount / pageSize;
             result.PageCount = (int)Math.Ceiling(pageCount);
@@ -67,15 +71,15 @@ namespace Repository.Utils
         }
 
         /// <summary>
-        /// Funcion que permite obtener una lista de objetos páginada para el repositorio que lo necesite
+        /// Function that allows obtaining a paged list of objects for the repository that needs it.
         /// </summary>
-        /// <typeparam name="T">Clase de Entidad de Repositorio</typeparam>
-        /// <param name="query">Query, definida como Queryable</param>
-        /// <param name="page">Página actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <returns>Lista de objetos páginada</returns>
+        /// <typeparam name="T">Repository entity class</typeparam>
+        /// <param name="query">Query, defined as Queryable</param>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <returns>Paged list of objects</returns>
         public static IEnumerable<T> GetPagedList<T>(this IQueryable<T> query,
-                                         int page, int pageSize) where T : class
+                                          int page, int pageSize) where T : class
         {
             var skip = (page - 1) * pageSize;
             var results = query.Skip(skip).Take(pageSize).AsEnumerable().ToList();
@@ -84,16 +88,16 @@ namespace Repository.Utils
         }
 
         /// <summary>
-        /// Funcion asíncrona que permite obtener una lista de objetos páginada para el repositorio que lo necesite
+        /// Asynchronous function that allows obtaining a paged list of objects for the repository that needs it.
         /// </summary>
-        /// <typeparam name="T">Clase de Entidad de Repositorio</typeparam>
-        /// <param name="query">Query, definida como Queryable</param>
-        /// <param name="page">Página actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
-        /// <returns>Lista de objetos páginada</returns>
+        /// <typeparam name="T">Repository entity class</typeparam>
+        /// <param name="query">Query, defined as Queryable</param>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Paged list of objects</returns>
         public static async Task<IEnumerable<T>> GetPagedListAsync<T>(this IQueryable<T> query,
-                                         int page, int pageSize, CancellationToken cancellationToken = default) where T : class
+                                          int page, int pageSize, CancellationToken cancellationToken = default) where T : class
         {
             var skip = (page - 1) * pageSize;
             var results = await query.Skip(skip).Take(pageSize).ToListAsync(cancellationToken);
@@ -102,15 +106,15 @@ namespace Repository.Utils
         }
 
         /// <summary>
-        /// Funcion asíncrona que permite obtener un objeto de Páginación para el repositorio que lo necesite
+        /// Asynchronous function that allows obtaining a pagination object for the repository that needs it.
         /// </summary>
-        /// <typeparam name="T">Clase de Entidad de Repositorio</typeparam>
-        /// <param name="query">Query, definida como Queryable</param>
-        /// <param name="page">Página actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <returns>Objeto de Paginación con lista de objetos</returns>
+        /// <typeparam name="T">Repository entity class</typeparam>
+        /// <param name="query">Query, defined as Queryable</param>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <returns>Pagination object with list of objects</returns>
         public static async Task<PagedResult<T>> GetPagedAsAsync<T>(this IQueryable<T> query,
-                                         int page, int pageSize) where T : class
+                                          int page, int pageSize) where T : class
         {
             var result = new PagedResult<T>
             {
@@ -118,7 +122,6 @@ namespace Repository.Utils
                 PageSize = pageSize,
                 RowCount = await query.CountAsync()
             };
-
 
             var pageCount = (double)result.RowCount / pageSize;
             result.PageCount = (int)Math.Ceiling(pageCount);

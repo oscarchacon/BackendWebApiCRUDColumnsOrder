@@ -5,7 +5,7 @@ using System.Text;
 namespace Entities.Utils
 {
     /// <summary>
-    /// Clase que sirve para respuestas de las peticiones
+    /// Class used for request responses.
     /// </summary>
     public class ResponseMessage
     {

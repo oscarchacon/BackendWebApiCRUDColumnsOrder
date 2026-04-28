@@ -10,8 +10,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace WebApi.Helpers
 {
+    /// <summary>
+    /// Helper class for initializing the in-memory database.
+    /// </summary>
     internal static class InMemoryDatabaseInitializer
     {
+        /// <summary>
+        /// Initializes the database and seeds it with data from a JSON file.
+        /// </summary>
+        /// <param name="repositoryContext">The database context</param>
+        /// <param name="configuration">The application configuration</param>
+        /// <param name="contentRootPath">The root path of the application content</param>
         internal static void Initialize(RepositoryContext repositoryContext, IConfiguration configuration, string contentRootPath)
         {
             repositoryContext.Database.EnsureCreated();
@@ -65,6 +74,12 @@ namespace WebApi.Helpers
             }
         }
 
+        /// <summary>
+        /// Loads seed data sections from the configured JSON file.
+        /// </summary>
+        /// <param name="configuration">The application configuration</param>
+        /// <param name="contentRootPath">The root path of the application content</param>
+        /// <returns>A dictionary where keys are entity names and values are JSON elements</returns>
         private static Dictionary<string, JsonElement> LoadSeedSections(IConfiguration configuration, string contentRootPath)
         {
             var filePath = configuration["SeedData:File"];

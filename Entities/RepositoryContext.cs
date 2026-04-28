@@ -7,7 +7,7 @@ using System.Text;
 namespace Entities
 {
     /// <summary>
-    /// Clase de Repositorio de la Base de datos y la integración del Módelo con Entity Framework Core
+    /// Database repository class and integration of the Model with Entity Framework Core.
     /// </summary>
     public class RepositoryContext : DbContext
     {

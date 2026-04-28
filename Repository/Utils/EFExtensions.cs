@@ -8,19 +8,18 @@ using System.Threading.Tasks;
 
 namespace Repository.Utils
 {
-    // Using from: https://expertcodeblog.wordpress.com/2018/02/19/net-core-2-0-resolve-error-the-source-iqueryable-doesnt-implement-iasyncenumerable/
     /// <summary>
-    /// Clase de Estatica de Extensión para Entity Framework
+    /// Static extension class for Entity Framework.
     /// </summary>
     public static class EFExtensions
     {
 
         /// <summary>
-        /// Función que permite tener una lista asíncronica que no tenga errores
+        /// Function that allows having an asynchronous list without errors.
         /// </summary>
-        /// <typeparam name="TSource">Clase de Parámetro</typeparam>
-        /// <param name="source">Objeto de Procedencia con Clase de Parámetro</param>
-        /// <returns>Tarea Asíncrona con Lista segura</returns>
+        /// <typeparam name="TSource">Parameter class</typeparam>
+        /// <param name="source">Source object with parameter class</param>
+        /// <returns>Asynchronous task with safe list</returns>
         public static Task<List<TSource>> ToListAsyncSafe<TSource>(this IQueryable<TSource> source)
         {
             if (source == null)
@@ -30,27 +29,23 @@ namespace Repository.Utils
             return source.ToListAsync();
         }
 
-        // Code From: http://www.chrisloves.net/blogs/entity-framework-order-by-column-name-as-string/
-        // Author: Chris Bullard
         /// <summary>
-        /// Método  que permite ordenar un objeto query con el nombre de una propiedad de manera ascendente
+        /// Method that allows sorting a query object by a property name in ascending order.
         /// </summary>
-        /// <typeparam name="TSource">Clase de Parametro</typeparam>
-        /// <param name="query">Objeto de tipo query Linq</param>
-        /// <param name="propertyName">Nombre de propiedad</param>
-        /// <returns>Objeto Query Ordenado</returns>
+        /// <typeparam name="TSource">Parameter class</typeparam>
+        /// <param name="query">Linq query object</param>
+        /// <param name="propertyName">Property name</param>
+        /// <returns>Sorted query object</returns>
         public static IOrderedQueryable<TSource> CustomOrderBy<TSource>(this IQueryable<TSource> query, string propertyName)
         {
             var entityType = typeof(TSource);
 
-            //Create x=>x.PropName
             var properties = entityType.GetProperties();
             var propertyInfo = Array.Find(properties, propertyClass => propertyClass.Name.ToLower().Equals(propertyName.ToLower()));
             ParameterExpression arg = Expression.Parameter(entityType, "x");
             MemberExpression property = Expression.Property(arg, propertyInfo.Name);
             var selector = Expression.Lambda(property, new ParameterExpression[] { arg });
 
-            //Get System.Linq.Queryable.OrderBy() method.
             var enumarableType = typeof(Queryable);
             var method = enumarableType.GetMethods()
                  .Where(m => m.Name == "OrderBy" && m.IsGenericMethodDefinition)
@@ -60,35 +55,29 @@ namespace Repository.Utils
                      return parameters.Count == 2;
                  }).Single();
 
-            //The linq's OrderBy<TSource, TKey> has two generic types, which provided here
             MethodInfo genericMethod = method.MakeGenericMethod(entityType, propertyInfo.PropertyType);
 
-            // Call query.OrderBy(selector), with query and selector: x=> x.PropName
-            // Note that we pass the selector as Expression to the method and we don't compile it.
-            // By doing so EF can extract "order by" columns and generate SQL for it
             var newQuery = (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
             return newQuery;
         }
 
         /// <summary>
-        /// Método  que permite ordenar un objeto query con el nombre de una propiedad de manera descendente
+        /// Method that allows sorting a query object by a property name in descending order.
         /// </summary>
-        /// <typeparam name="TSource">Clase de Parametro</typeparam>
-        /// <param name="query">Objeto de tipo query Linq</param>
-        /// <param name="propertyName">Nombre de propiedad</param>
-        /// <returns>Objeto Query Ordenado</returns>
+        /// <typeparam name="TSource">Parameter class</typeparam>
+        /// <param name="query">Linq query object</param>
+        /// <param name="propertyName">Property name</param>
+        /// <returns>Sorted query object</returns>
         public static IOrderedQueryable<TSource> CustomOrderByDescending<TSource>(this IQueryable<TSource> query, string propertyName)
         {
             var entityType = typeof(TSource);
 
-            //Create x=>x.PropName
             var properties = entityType.GetProperties();
             var propertyInfo = Array.Find(properties, propertyClass => propertyClass.Name.ToLower().Equals(propertyName.ToLower()));
             ParameterExpression arg = Expression.Parameter(entityType, "x");
             MemberExpression property = Expression.Property(arg, propertyInfo.Name);
             var selector = Expression.Lambda(property, new ParameterExpression[] { arg });
 
-            //Get System.Linq.Queryable.OrderBy() method.
             var enumarableType = typeof(Queryable);
             var method = enumarableType.GetMethods()
                  .Where(m => m.Name == "OrderByDescending" && m.IsGenericMethodDefinition)
@@ -98,12 +87,8 @@ namespace Repository.Utils
                      return parameters.Count == 2;
                  }).Single();
 
-            //The linq's OrderByDescending<TSource, TKey> has two generic types, which provided here
             MethodInfo genericMethod = method.MakeGenericMethod(entityType, propertyInfo.PropertyType);
 
-            // Call query.OrderByDescending(selector), with query and selector: x=> x.PropName
-            // Note that we pass the selector as Expression to the method and we don't compile it.
-            // By doing so EF can extract "order by" columns and generate SQL for it
             var newQuery = (IOrderedQueryable<TSource>)genericMethod.Invoke(genericMethod, new object[] { query, selector });
             return newQuery;
         }

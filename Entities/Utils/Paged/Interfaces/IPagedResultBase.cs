@@ -5,7 +5,7 @@ using System.Text;
 namespace Entities.Utils.Paged.Interfaces
 {
     /// <summary>
-    /// Interface Base para el Objeto de Paginación
+    /// Base interface for pagination result objects.
     /// </summary>
     public interface IPagedResultBase
     {
@@ -13,9 +13,7 @@ namespace Entities.Utils.Paged.Interfaces
         int PageCount { get; set; }
         int PageSize { get; set; }
         int RowCount { get; set; }
-
         int FirstRowOnPage { get; }
-
         int LastRowOnPage { get; }
     }
 }

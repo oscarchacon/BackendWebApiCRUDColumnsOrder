@@ -15,7 +15,7 @@ using Entities.DTO;
 namespace BusinesRules.Entities;
 
 /// <summary>
-/// Clase de Reglas de Negocios para Entidades
+/// Business Rules class for Entities.
 /// </summary>
 public class EntitiesBR
 {
@@ -30,13 +30,13 @@ public class EntitiesBR
 
 
     /// <summary>
-    /// Función que permite obtener una Lista con todas los datos de Entidad
+    /// Retrieves a list of all entity data.
     /// </summary>
-    /// <param name="page">Página Actual</param>
-    /// <param name="pageSize">Elementos por Página</param>
-    /// <param name="columnName">Nombre de columna a Ordenar</param>
-    /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-    /// <returns>Lista de Datos de Entidad</returns>
+    /// <param name="page">Current page</param>
+    /// <param name="pageSize">Elements per page</param>
+    /// <param name="columnName">Column name to sort by</param>
+    /// <param name="orderDesc">Descending sort boolean</param>
+    /// <returns>List of entity data</returns>
     public async Task<IEnumerable<EntityDTO>> GetAllEntities(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
     {
 
@@ -46,25 +46,26 @@ public class EntitiesBR
     }
 
     /// <summary>
-    /// Función que permite obtener un Objeto de Paginación con Lista con todas los datos de Entidad
+    /// Retrieves a pagination object with all entity data.
     /// </summary>
-    /// <param name="page">Página Actual</param>
-    /// <param name="pageSize">Elementos por Página</param>
-    /// <param name="columnName">Nombre de columna a Ordenar</param>
-    /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-    /// <returns>Objeto de Paginación con Lista de Datos d Entidad</returns>
+    /// <param name="page">Current page</param>
+    /// <param name="pageSize">Elements per page</param>
+    /// <param name="columnName">Column name to sort by</param>
+    /// <param name="orderDesc">Descending sort boolean</param>
+    /// <returns>Pagination object with entity data list</returns>
     public async Task<IPagedResult<EntityDTO>> GetAllEntitiesPaged(int? page, int? pageSize, string columnName = null, bool orderDesc = false)
     {
 
         var entities = await this.repository.Entity.GetAllPagedAsync(page, pageSize, columnName, orderDesc);
         return this.mapper.Map<PagedResult<EntityDTO>>(entities);
+
     }
 
     /// <summary>
-    /// Función que busca una Entidad por su Id de forma asíncrona
+    /// Finds an entity by its ID asynchronously.
     /// </summary>
-    /// <param name="companyId">Id de Entidad</param>
-    /// <returns>Objeto Entidad</returns>
+    /// <param name="companyId">Entity ID</param>
+    /// <returns>Entity object</returns>
     public async Task<EntityDTO> GetEntityById(Guid entityId)
     {
 
@@ -75,10 +76,10 @@ public class EntitiesBR
     }
 
     /// <summary>
-    /// Función que crea una nueva Entidad
+    /// Creates a new entity.
     /// </summary>
-    /// <param name="entityRegister">Objeto Entidad para Registrar</param>
-    /// <returns>Objeto Entidad creado</returns>
+    /// <param name="entity">Entity object to register</param>
+    /// <returns>Created entity object</returns>
     public async Task CreateEntity(Entity entity)
     {
 
@@ -89,11 +90,11 @@ public class EntitiesBR
     }
 
     /// <summary>
-    /// Función que actualiza los datos de una Entidad
+    /// Updates data for an existing entity.
     /// </summary>
-    /// <param name="entityId">Id de Entidad</param>
-    /// <param name="entityUpdated">Objeto Entidad con los nuevos datos</param>
-    /// <returns>Booleano si se realizó la acción</returns>
+    /// <param name="entityId">Entity ID</param>
+    /// <param name="entityUpdated">Entity object with new data</param>
+    /// <returns>Boolean if the action was performed</returns>
     public async Task<EntityDTO> UpdateEntity(Guid entityId, Entity entityUpdated)
     {
 
@@ -110,16 +111,15 @@ public class EntitiesBR
     }
 
     /// <summary>
-    /// Función que permite eliminar una Entidad a partir de su Id
+    /// Deletes an entity based on its ID.
     /// </summary>
-    /// <param name="entityId">Id de Entidad</param>
-    /// <returns>Objeto Booleano si se realizó la acción</returns>
+    /// <param name="entityId">Entity ID</param>
+    /// <returns>Boolean object if the action was performed</returns>
     public async Task DeleteEntity(Guid entityId)
     {
 
         var dbEntity = this.repository.Entity.GetById(entityId);
         if (dbEntity.IsEmptyObject()) { throw new NotFoundException("Entity not found"); }
-
 
         this.repository.Entity.DeleteEntity(dbEntity);
         await this.repository.SaveAsync();

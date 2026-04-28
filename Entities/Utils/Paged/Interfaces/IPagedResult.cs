@@ -5,9 +5,9 @@ using System.Text;
 namespace Entities.Utils.Paged.Interfaces
 {
     /// <summary>
-    /// Interfaz para la clase del objeto de paginacion conteniendo los resultados
+    /// Interface for the pagination result object
     /// </summary>
-    /// <typeparam name="T">Clase de parametro a usarse</typeparam>
+    /// <typeparam name="T">Parameter class to use</typeparam>
     public interface IPagedResult<T> : IPagedResultBase where T : class
     {
         IEnumerable<T> Results { get; set; }

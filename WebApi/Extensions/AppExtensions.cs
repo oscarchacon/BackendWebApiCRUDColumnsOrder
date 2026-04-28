@@ -10,12 +10,12 @@ using WebApi.Middleware;
 namespace WebApi.Extensions
 {
     /// <summary>
-    /// Clase Estatica de Extensión para la configuración de la App
+    /// Static extension class for App configuration.
     /// </summary>
     public static class AppExtensions
     {
         /// <summary>
-        /// Función que permite configurar la documentación de Swagger para la App
+        /// Function that allows configuring the Swagger documentation for the App.
         /// </summary>
         /// <param name="app"></param>
         public static void UseSwaggerDocumentation(this IApplicationBuilder app)
@@ -31,11 +31,10 @@ namespace WebApi.Extensions
                 c.RoutePrefix = string.Empty;
             });
 
-
         }
 
         /// <summary>
-        /// Función que permite configurar los middlewares a usar con la App
+        /// Function that allows configuring the middlewares to be used with the App.
         /// </summary>
         /// <param name="app"></param>
         public static void UseMiddlewares(this IApplicationBuilder app)

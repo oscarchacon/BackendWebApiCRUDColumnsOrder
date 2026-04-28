@@ -10,92 +10,91 @@ using System.Threading.Tasks;
 namespace Contracts.Entities
 {
     /// <summary>
-    /// Interface para la implementación dentro del Repositorio de Entidad
+    /// Interface for the implementation within the Entity Repository.
     /// </summary>
     public interface IEntityRepository : IRepositoryBase<Entity>
     {
         /// <summary>
-        /// Método de implementación que permite obtener de la base de datos una lista con todos los datos de Entidad
+        /// Implementation method that allows retrieving a list of all entity data from the database.
         /// </summary>
-        /// <param name="page">Página Actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="columnName">Nombre de columna a Ordenar</param>
-        /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-        /// <returns>Lista de Datos de Entidad</returns>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="columnName">Column name to sort by</param>
+        /// <param name="orderDesc">Descending sort boolean</param>
+        /// <returns>List of entity data</returns>
         IEnumerable<Entity> GetAll(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false);
 
         /// <summary>
-        /// Método de implementación que permite obtener de la base de datos una lista con todos los datos de Entidad de forma asíncrona
+        /// Implementation method that allows retrieving a list of all entity data from the database asynchronously.
         /// </summary>
-        /// <param name="page">Página Actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="columnName">Nombre de columna a Ordenar</param>
-        /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
-        /// <returns>Lista de Datos de Entidad</returns>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="columnName">Column name to sort by</param>
+        /// <param name="orderDesc">Descending sort boolean</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>List of entity data</returns>
         Task<IEnumerable<Entity>> GetAllAsync(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false, CancellationToken cancellationToken = default);
         
-
         /// <summary>
-        /// Método de implementación que permite obtener de la base de datos un objeto de Paginación con la lista de todos los datos de Entidad
+        /// Implementation method that allows retrieving a pagination object with the list of all entity data.
         /// </summary>
-        /// <param name="page">Página Actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="columnName">Nombre de columna a Ordenar</param>
-        /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-        /// <returns>Objeto de Paginación con la Lista de Datos de Entidad</returns>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="columnName">Column name to sort by</param>
+        /// <param name="orderDesc">Descending sort boolean</param>
+        /// <returns>Pagination object with the list of entity data</returns>
         IPagedResult<Entity> GetAllPaged(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false);
 
         /// <summary>
-        /// Método de implementación que permite obtener de la base de datos un objeto de Paginación con la lista de todos los datos de Entidad de forma asíncrona
+        /// Implementation method that allows retrieving a pagination object with the list of all entity data asynchronously.
         /// </summary>
-        /// <param name="page">Página Actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="columnName">Nombre de columna a Ordenar</param>
-        /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
-        /// <returns>Objeto de Paginación con la Lista de Datos de Entidad</returns>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="columnName">Column name to sort by</param>
+        /// <param name="orderDesc">Descending sort boolean</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Pagination object with the list of entity data</returns>
         Task<IPagedResult<Entity>> GetAllPagedAsync(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Método de implementación que permite obtener de la base de datos una Entidad por medio de su Id
+        /// Implementation method that allows retrieving an entity from the database using its Id.
         /// </summary>
-        /// <param name="entityId">Id de Entidad</param>
-        /// <returns>Objeto Entidad</returns>
+        /// <param name="entityId">Entity Id</param>
+        /// <returns>Entity object</returns>
         Entity GetById(Guid entityId);
 
         /// <summary>
-        /// Método de implementación que permite obtener de la base de datos una Entidad por medio de su Id de forma asíncrona
+        /// Implementation method that allows retrieving an entity from the database using its Id asynchronously.
         /// </summary>
-        /// <param name="entityId">Id de Entidad</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
-        /// <returns>Objeto Entidad</returns>
+        /// <param name="entityId">Entity Id</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Entity object</returns>
         Task<Entity> GetByIdAsync(Guid entityId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Método de implementación que permite crear un registro de una Entidad en la base de datos
+        /// Implementation method that allows creating an entity record in the database.
         /// </summary>
-        /// <param name="entity">Objeto Entidad</param>
+        /// <param name="entity">Entity object</param>
         void CreateEntity(Entity entity);
 
         /// <summary>
-        /// Método de implementación que permite crear un registro de una Entidad en la base de datos de forma asíncrona
+        /// Implementation method that allows creating an entity record in the database asynchronously.
         /// </summary>
-        /// <param name="entity">Objeto Entidad</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
+        /// <param name="entity">Entity object</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         Task CreateEntityAsync(Entity entity, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Método de implementación que permite hacer una actualización en la base de datos de una Entidad
+        /// Implementation method that allows updating data for an entity in the database.
         /// </summary>
-        /// <param name="dbEntity">Objeto Entidad con datos provenientes de la base de datos</param>
-        /// <param name="entity">Objeto Entidad con los datos a actualizar</param>
+        /// <param name="dbEntity">Entity object with data coming from the database</param>
+        /// <param name="entity">Entity object with the data to update</param>
         void UpdateEntity(Entity dbEntity, Entity entity);
 
         /// <summary>
-        /// Método de implementación que permite eliminar un registro de la base de datos de una Entidad
+        /// Implementation method that allows deleting an entity record from the database.
         /// </summary>
-        /// <param name="entity">Objeto Entidad</param>
+        /// <param name="entity">Entity object</param>
         void DeleteEntity(Entity entity);
     }
 }

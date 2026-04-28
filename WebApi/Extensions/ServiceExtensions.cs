@@ -1,5 +1,8 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +23,7 @@ using BusinesRules.Entities;
 namespace WebApi.Extensions
 {
     /// <summary>
-    /// Clase Estatica para las Extensiones de Services.
+    /// Static class for Service extensions.
     /// </summary>
     public static class ServiceExtensions
     {
@@ -57,7 +60,7 @@ namespace WebApi.Extensions
         }
 
         /// <summary>
-        /// Configura el contexto de la conexion para las Base de datos, conjunto con el string de conexión.
+        /// Configures the database context with the connection string.
         /// </summary>
         /// <param name="services">Services</param>
         /// <param name="configuration">Configuration</param>
@@ -80,6 +83,7 @@ namespace WebApi.Extensions
                     Name = SwaggerConfiguration.ContactName,
                     Url = new Uri(SwaggerConfiguration.ContactUrl)
                 };
+
                 swagger.SwaggerDoc(SwaggerConfiguration.DocNameV1,
                         new OpenApiInfo
                         {
@@ -88,6 +92,16 @@ namespace WebApi.Extensions
                             Description = SwaggerConfiguration.DocInfoDescription,
                             Contact = contact
                         });
+
+                swagger.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    if (!apiDesc.GroupName?.Equals(docName, StringComparison.OrdinalIgnoreCase) ?? true)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                });
 
                 var security = new OpenApiSecurityRequirement{
                     {
@@ -105,26 +119,22 @@ namespace WebApi.Extensions
                     Description = SwaggerConfiguration.SecurityApiKeyDescription,
                     Name = SwaggerConfiguration.SecurityApiKeyName,
                     In = SwaggerConfiguration.SecurityApiKeyIn,
-                    //In = ParameterLocation.Header,
                     Type = SwaggerConfiguration.SecurityApiKeyType
-                    //Type = SecuritySchemeType.ApiKey
                 });
 
                 swagger.AddSecurityRequirement(security);
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, "WebApiEasySwagger.xml");
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 swagger.IncludeXmlComments(xmlPath);
 
                 swagger.EnableAnnotations();
             });
-
         }
 
         /// <summary>
-        /// Configura Los controladores, para que puedan ser usados por NewtonsoftJson
+        /// Configures controllers to use NewtonsoftJson serialization.
         /// </summary>
         /// <param name="services">Services.</param>
         public static void ConfigureControllersWithJson(this IServiceCollection services)
@@ -134,6 +144,28 @@ namespace WebApi.Extensions
                     {
                         x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     });
+        }
+
+        /// <summary>
+        /// Configures API versioning and the version explorer.
+        /// </summary>
+        /// <param name="services">Services</param>
+        public static void ConfigureApiVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+                options.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader());
+            });
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
         }
 
         /// <summary>
@@ -147,7 +179,7 @@ namespace WebApi.Extensions
 
 
         /// <summary>
-        /// Configura los Contenedores de los Repositorios (Repository Wrappers).
+        /// Configures repository wrappers for dependency injection.
         /// </summary>
         /// <param name="services">Services</param>
         public static void ConfigureRepositoriesWrappers(this IServiceCollection services)

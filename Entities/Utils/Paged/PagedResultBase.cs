@@ -6,7 +6,7 @@ using System.Text;
 namespace Entities.Utils.Paged
 {
     /// <summary>
-    /// Clase de base para la clase de Paginacion de los resultados
+    /// Base class for pagination result objects.
     /// </summary>
     public class PagedResultBase : IPagedResultBase
     {

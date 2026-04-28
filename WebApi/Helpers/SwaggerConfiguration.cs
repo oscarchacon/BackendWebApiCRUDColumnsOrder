@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebApi.Helpers
 {
     /// <summary>
-    /// Clase de Configuración de Swagger.
+    /// Swagger configuration class.
     /// </summary>
     public class SwaggerConfiguration
     {
@@ -66,16 +66,8 @@ namespace WebApi.Helpers
         /// </summary>
         public const string SecurityApiKeyName = "Authorization";
 
-        /// <summary>
-        /// <para>header</para>
-        /// </summary>
-        //public const string SecurityApiKeyIn = "header";
         public const ParameterLocation SecurityApiKeyIn = ParameterLocation.Header;
 
-        /// <summary>
-        /// <para>apiKey</para>
-        /// </summary>
-        //public const string SecurityApiKeyType = "apiKey";
         public const SecuritySchemeType SecurityApiKeyType = SecuritySchemeType.ApiKey;
     }
 }

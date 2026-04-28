@@ -6,7 +6,7 @@ using System.Text;
 namespace Entities
 {
     /// <summary>
-    /// Interfaz para que sea de base para todas las clases del modelo.
+    /// Interface that serves as the base for all model classes.
     /// </summary>
     public interface IEntity
     {

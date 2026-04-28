@@ -6,15 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Repository.Base
 {
     /// <summary>
-    /// Clase de Repositorio Base, para implemetación con Entity Framework Core
+    /// Base repository class for implementation with Entity Framework Core.
     /// </summary>
-    /// <typeparam name="T">Clase de Entidad del Modelo</typeparam>
+    /// <typeparam name="T">Entity model class</typeparam>
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
         protected RepositoryContext RepositoryContext { get; set; }
@@ -27,65 +26,53 @@ namespace Repository.Base
         protected RepositoryBase() { }
 
         /// <summary>
-        /// Método que obtiene todos los datos de la entidad
+        /// Method that retrieves all entity data.
         /// </summary>
-        /// <returns>Objeto Query Linq</returns>
+        /// <returns>Linq Query object</returns>
         public IQueryable<T> FindAll()
         {
             return this.RepositoryContext.Set<T>().AsNoTracking();
         }
 
         /// <summary>
-        /// Método que obtiene los datos de la entidad por medio de una condición
+        /// Method that retrieves entity data based on a condition.
         /// </summary>
-        /// <param name="expression">Expresión de Condición</param>
-        /// <returns>Objeto Query Linq</returns>
+        /// <param name="expression">Condition expression</param>
+        /// <returns>Linq Query object</returns>
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
             return this.RepositoryContext.Set<T>().Where(expression).AsNoTracking();
         }
 
         /// <summary>
-        /// Método que permite insertar un objeto con los datos de la entidad
+        /// Method that allows inserting an object with entity data.
         /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="entity">Entity object</param>
         public void Create(T entity)
         {
             this.RepositoryContext.Set<T>().Add(entity);
         }
 
-
         /// <summary>
-        /// Método asíncrono que permite insertar un objeto con los datos de la entidad
+        /// Method that allows updating entity object data.
         /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
-        public async Task CreateAsync(T entity, CancellationToken cancellationToken = default)
-        {
-            await this.RepositoryContext.Set<T>().AddAsync(entity, cancellationToken);
-        }
-
-        /// <summary>
-        /// Método que permite actualizar los datos del objeto de entidad
-        /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="entity">Entity object</param>
         public void Update(T entity)
         {
             this.RepositoryContext.Set<T>().Update(entity);
         }
-        
 
         /// <summary>
-        /// Método que permite eliminar los datos de un objeto de entidad
+        /// Method that allows deleting an object's entity data.
         /// </summary>
-        /// <param name="entity">Objeto de Entidad</param>
+        /// <param name="entity">Entity object</param>
         public void Delete(T entity)
         {
             this.RepositoryContext.Set<T>().Remove(entity);
         }
 
         /// <summary>
-        /// Método Asíncrono que permite guardar los cambios CRUD
+        /// Asynchronous method that allows saving CRUD changes.
         /// </summary>
         public async Task SaveAsync()
         {

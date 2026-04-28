@@ -6,38 +6,38 @@ using System.Threading.Tasks;
 namespace WebApi.Utils
 {
     /// <summary>
-    /// Clase extensión de Utilidad para el uso en los controladores.
+    /// Utility extension class for controllers.
     /// </summary>
     public static class ClassUtils
     {
         /// <summary>
-        /// Función que permite saber si la Lista tiene contenido
+        /// Checks if the list has content.
         /// </summary>
-        /// <returns>Retorna booleano si hay contenido en la lista</returns>
-        /// <param name="data">Lista IEnumerable</param>
-        /// <typeparam name="T">Clase que contiene la lista</typeparam>
+        /// <returns>Returns true if the list contains elements.</returns>
+        /// <param name="data">IEnumerable list</param>
+        /// <typeparam name="T">List item type</typeparam>
         public static bool IsAny<T>(this IEnumerable<T> data)
         {
             return data != null && data.Any();
         }
 
         /// <summary>
-        /// Función que permite saber si la Lista tiene contenido
+        /// Checks if the list has content.
         /// </summary>
-        /// <returns>Retorna booleano si hay contenido en la lista</returns>
-        /// <param name="data">Lista IList</param>
-        /// <typeparam name="T">Clase que contiene la lista</typeparam>
+        /// <returns>Returns true if the list contains elements.</returns>
+        /// <param name="data">IList list</param>
+        /// <typeparam name="T">List item type</typeparam>
         public static bool IsAny<T>(this IList<T> data)
         {
             return data != null && data.Any();
         }
 
         /// <summary>
-        /// Función que permite saber si el objeto es nulo
+        /// Checks if the object is null.
         /// </summary>
-        /// <typeparam name="T">Clase se contiene el Objeto</typeparam>
-        /// <param name="data">Objeto</param>
-        /// <returns>Retorna booleano si el objeto es nulo</returns>
+        /// <typeparam name="T">Object type</typeparam>
+        /// <param name="data">Object</param>
+        /// <returns>Returns true if the object is null</returns>
         public static bool IsNull<T>(this T data) where T : class
         {
             return data == null;

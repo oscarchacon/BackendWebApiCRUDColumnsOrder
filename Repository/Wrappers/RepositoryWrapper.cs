@@ -5,12 +5,11 @@ using Repository.Wrappers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Wrappers
 {
     /// <summary>
-    /// Clase que contiene las dependencias de los repositorios de las entidades
+    /// Class containing the dependencies of the entity repositories.
     /// </summary>
     public class RepositoryWrapper : IRepositoryWrapper
     {
@@ -21,7 +20,10 @@ namespace Repository.Wrappers
         {
             get
             {
-                this.entity ??= new EntityRepository(this.repositoryContext);
+                if (this.entity == null)
+                {
+                    this.entity = new EntityRepository(this.repositoryContext);
+                }
                 return this.entity;
             }
         }

@@ -7,7 +7,7 @@ using System.Text;
 namespace Entities.Models
 {
     /// <summary>
-    /// Clase de Entidad para ser usada como modelo.
+    /// Entity class to be used as a model.
     /// </summary>
     [Table("Entity")]
     public class Entity : IEntity

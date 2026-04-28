@@ -18,20 +18,20 @@ using System.Threading.Tasks;
 namespace Repository.Entities
 {
     /// <summary>
-    /// Clase de repositorio de la Entidad, la cual contiene la implementación del CRUD
+    /// Entity repository class containing the CRUD implementation.
     /// </summary>
     public class EntityRepository : RepositoryBase<Entity>, IEntityRepository
     {
         public EntityRepository(RepositoryContext repositoryContext) : base(repositoryContext) { }
 
         /// <summary>
-        /// Método que permite obtener de la base de datos una lista con todos los datos de Entidad
+        /// Method that retrieves a list of all entity data from the database.
         /// </summary>
-        /// <param name="page">Página Actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="columnName">Nombre de columna a Ordenar</param>
-        /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-        /// <returns>Lista de Datos de Entidad</returns>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="columnName">Column name to sort by</param>
+        /// <param name="orderDesc">Descending sort boolean</param>
+        /// <returns>List of entity data</returns>
         public async Task<IEnumerable<Entity>> GetAllAsync(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false, CancellationToken cancellationToken = default)
         {
             var entitiesFind = this.FindAll();
@@ -58,14 +58,14 @@ namespace Repository.Entities
         }
 
         /// <summary>
-        /// Método que permite obtener de la base de datos un objeto de Paginación con la lista de todos los datos de Entidad de forma asíncrona
+        /// Method that retrieves a pagination object with the list of all entity data asynchronously from the database.
         /// </summary>
-        /// <param name="page">Página Actual</param>
-        /// <param name="pageSize">Elementos por Página</param>
-        /// <param name="columnName">Nombre de columna a Ordenar</param>
-        /// <param name="orderDesc">Booleano de ordenamiento descendente</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
-        /// <returns>Objeto de Paginación con la Lista de Datos de Entidad</returns>
+        /// <param name="page">Current page</param>
+        /// <param name="pageSize">Elements per page</param>
+        /// <param name="columnName">Column name to sort by</param>
+        /// <param name="orderDesc">Descending sort boolean</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Pagination object with the list of entity data</returns>
         public async Task<IPagedResult<Entity>> GetAllPagedAsync(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false, CancellationToken cancellationToken = default)
         {
             var entitiesFind = this.FindAll();
@@ -95,10 +95,10 @@ namespace Repository.Entities
             };
         }
         /// <summary>
-        /// Método que permite obtener de la base de datos una Entidad por medio de su Id
+        /// Method that retrieves an entity from the database using its Id.
         /// </summary>
-        /// <param name="entityId">Id de Entidad</param>
-        /// <returns>Objeto Entidad</returns>
+        /// <param name="entityId">Entity Id</param>
+        /// <returns>Entity object</returns>
         public async Task<Entity> GetByIdAsync(Guid entityId, CancellationToken cancellationToken = default)
         {
             var entityFind = this.FindByCondition(entity => entity.Id.Equals(entityId));
@@ -107,10 +107,10 @@ namespace Repository.Entities
         }
 
         /// <summary>
-        /// Método que permite crear un registro de una Entidad en la base de datos de forma asíncrona
+        /// Method that creates an entity record in the database asynchronously.
         /// </summary>
-        /// <param name="entity">Objeto Entidad</param>
-        /// <param name="cancellationToken">Token de cancelación</param>
+        /// <param name="entity">Entity object</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         public async Task CreateEntityAsync(Entity entity, CancellationToken cancellationToken = default)
         {
             entity.Id = new Guid();
@@ -118,10 +118,10 @@ namespace Repository.Entities
         }
 
         /// <summary>
-        /// Método que permite hacer una actualización en la base de datos de una Entidad
+        /// Method that performs an update in the database for an entity.
         /// </summary>
-        /// <param name="dbEntity">Objeto Entidad con datos provenientes de la base de datos</param>
-        /// <param name="entity">Objeto Entidad con los datos a actualizar</param>
+        /// <param name="dbEntity">Entity object with data coming from the database</param>
+        /// <param name="entity">Entity object with the data to update</param>
         public void UpdateEntity(Entity dbEntity, Entity entity)
         {
             dbEntity.Map(entity);
@@ -129,9 +129,9 @@ namespace Repository.Entities
         }
 
         /// <summary>
-        /// Método que permite eliminar un registro de la base de datos de una Entidad
+        /// Method that allows deleting an entity record from the database.
         /// </summary>
-        /// <param name="entity">Objeto Entidad</param>
+        /// <param name="entity">Entity object</param>
         public void DeleteEntity(Entity entity)
         {
             this.Delete(entity);
@@ -148,10 +148,10 @@ namespace Repository.Entities
         }
 
         /// <summary>
-        /// Método que permite obtener de la base de datos una Entidad por medio de su Id
+        /// Method that retrieves an entity from the database using its Id.
         /// </summary>
-        /// <param name="entityId">Id de Entidad</param>
-        /// <returns>Objeto Entidad</returns>
+        /// <param name="entityId">Entity Id</param>
+        /// <returns>Entity object</returns>
         public Entity GetById(Guid entityId)
         {
             var entityFind = this.FindByCondition(entity => entity.Id.Equals(entityId));
@@ -159,9 +159,9 @@ namespace Repository.Entities
         }
 
         /// <summary>
-        /// Método que permite crear un registro de una Entidad en la base de datos
+        /// Method that creates an entity record in the database.
         /// </summary>
-        /// <param name="entity">Objeto Entidad</param>
+        /// <param name="entity">Entity object</param>
         public void CreateEntity(Entity entity)
         {
             entity.Id = new Guid();

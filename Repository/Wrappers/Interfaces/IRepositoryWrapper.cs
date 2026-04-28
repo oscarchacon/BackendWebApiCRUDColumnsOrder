@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Repository.Wrappers.Interfaces
 {
     /// <summary>
-    /// Interface que contiene la inyección de dependencias con las interfaces de repositorios con las clases de repositorio
+    /// Interface containing the dependency injection for entity repository interfaces and repository classes.
     /// </summary>
     public interface IRepositoryWrapper
     {
