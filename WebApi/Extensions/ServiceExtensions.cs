@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -76,29 +77,10 @@ namespace WebApi.Extensions
         /// <param name="services">Services</param>
         public static void ConfigureSwaggerGen(this IServiceCollection services)
         {
+            services.AddTransient<IConfigureOptions<Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
             services.AddSwaggerGen(swagger =>
             {
-                var contact = new OpenApiContact()
-                {
-                    Name = SwaggerConfiguration.ContactName,
-                    Url = new Uri(SwaggerConfiguration.ContactUrl)
-                };
-
-                swagger.SwaggerDoc(SwaggerConfiguration.DocNameV1,
-                        new OpenApiInfo
-                        {
-                            Title = SwaggerConfiguration.DocInfoTitle,
-                            Version = SwaggerConfiguration.DocInfoVersion,
-                            Description = SwaggerConfiguration.DocInfoDescription,
-                            Contact = contact
-                        });
-
-                swagger.DocInclusionPredicate((docName, apiDesc) =>
-                {
-                    return string.IsNullOrWhiteSpace(apiDesc.GroupName)
-                        || apiDesc.GroupName.Equals(docName, StringComparison.OrdinalIgnoreCase);
-                });
-
                 var security = new OpenApiSecurityRequirement{
                     {
                         new OpenApiSecurityScheme{

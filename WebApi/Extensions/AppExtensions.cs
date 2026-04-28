@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,8 @@ namespace WebApi.Extensions
         /// <param name="app"></param>
         public static void UseSwaggerDocumentation(this IApplicationBuilder app)
         {
+            var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -27,7 +31,12 @@ namespace WebApi.Extensions
             app.UseSwaggerUI(c =>
             {
                 c.DocExpansion(DocExpansion.None);
-                c.SwaggerEndpoint(SwaggerConfiguration.EndpointUrl, SwaggerConfiguration.EndpointDescription);
+
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"{description.GroupName.ToUpperInvariant()}");
+                }
+
                 c.RoutePrefix = string.Empty;
             });
 
