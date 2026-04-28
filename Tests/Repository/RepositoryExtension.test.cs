@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Repository.Utils;
 
@@ -12,11 +13,11 @@ public class RepositoryExtensionTests
 
         var result = source.GetPaged(page: 2, pageSize: 3);
 
-        Assert.Equal(2, result.CurrentPage);
-        Assert.Equal(3, result.PageSize);
-        Assert.Equal(10, result.RowCount);
-        Assert.Equal(4, result.PageCount);
-        Assert.Equal(new[] { 4, 5, 6 }, result.Results.Select(x => x.Value).ToArray());
+        result.CurrentPage.Should().Be(2);
+        result.PageSize.Should().Be(3);
+        result.RowCount.Should().Be(10);
+        result.PageCount.Should().Be(4);
+        result.Results.Select(x => x.Value).Should().Equal(new[] { 4, 5, 6 });
     }
 
     [Fact]
@@ -28,11 +29,11 @@ public class RepositoryExtensionTests
 
         var result = await source.GetPagedAsync(page: 2, pageSize: 3);
 
-        Assert.Equal(2, result.CurrentPage);
-        Assert.Equal(3, result.PageSize);
-        Assert.Equal(7, result.RowCount);
-        Assert.Equal(3, result.PageCount);
-        Assert.Equal(new[] { 4, 5, 6 }, result.Results.Select(x => x.Value).ToArray());
+        result.CurrentPage.Should().Be(2);
+        result.PageSize.Should().Be(3);
+        result.RowCount.Should().Be(7);
+        result.PageCount.Should().Be(3);
+        result.Results.Select(x => x.Value).Should().Equal(new[] { 4, 5, 6 });
     }
 
     [Fact]
@@ -44,7 +45,7 @@ public class RepositoryExtensionTests
 
         var result = (await source.GetPagedListAsync(page: 3, pageSize: 2)).ToList();
 
-        Assert.Equal(new[] { 5, 6 }, result.Select(x => x.Value).ToArray());
+        result.Select(x => x.Value).Should().Equal(new[] { 5, 6 });
     }
 
     private sealed class SampleRow

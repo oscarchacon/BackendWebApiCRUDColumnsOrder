@@ -1,5 +1,6 @@
 using Entities.Models;
 using Entities.Utils;
+using FluentAssertions;
 
 namespace Tests.Entities;
 
@@ -12,7 +13,7 @@ public class EntityExtensionsTests
 
         var result = value.IsObjectNull();
 
-        Assert.True(result);
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -22,7 +23,7 @@ public class EntityExtensionsTests
 
         var result = entity.IsEmptyObject();
 
-        Assert.True(result);
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -32,7 +33,7 @@ public class EntityExtensionsTests
 
         var result = entity.IsEmptyObject();
 
-        Assert.False(result);
+        result.Should().BeFalse();
     }
 
     [Fact]
@@ -42,7 +43,7 @@ public class EntityExtensionsTests
 
         var result = entities.IsListObjectNull();
 
-        Assert.True(result);
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -52,7 +53,7 @@ public class EntityExtensionsTests
 
         var result = entities.IsEmptyListObject();
 
-        Assert.True(result);
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -60,6 +61,8 @@ public class EntityExtensionsTests
     {
         List<Entity>? entities = null;
 
-        Assert.Throws<ArgumentNullException>(() => entities!.IsEmptyListObject());
+        Action act = () => entities!.IsEmptyListObject();
+
+        act.Should().Throw<ArgumentNullException>();
     }
 }

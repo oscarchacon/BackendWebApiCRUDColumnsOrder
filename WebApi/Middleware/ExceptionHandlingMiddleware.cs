@@ -58,8 +58,8 @@ public class ExceptionHandlingMiddleware
 
             var responseError = new
             {
-                estado = response.StatusCode,
-                mensaje = exception?.Message,
+                code = response.StatusCode,
+                message = exception?.Message,
                 error = exception?.ToString()
             };
             await response.WriteAsync(JsonConvert.SerializeObject(responseError));

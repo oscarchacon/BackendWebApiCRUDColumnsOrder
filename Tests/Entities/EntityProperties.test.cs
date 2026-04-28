@@ -1,5 +1,6 @@
 using Entities.Models;
 using Entities.Utils;
+using FluentAssertions;
 
 namespace Tests.Entities;
 
@@ -10,7 +11,7 @@ public class EntityPropertiesTests
     {
         var result = EntityProperties.ContainsPropertyName(typeof(Entity), "Name");
 
-        Assert.True(result);
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -18,7 +19,7 @@ public class EntityPropertiesTests
     {
         var result = EntityProperties.ContainsPropertyName(typeof(Entity), "registerdate");
 
-        Assert.True(result);
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -26,7 +27,7 @@ public class EntityPropertiesTests
     {
         var result = EntityProperties.ContainsPropertyName(typeof(Entity), "UnknownProperty");
 
-        Assert.False(result);
+        result.Should().BeFalse();
     }
 
     [Fact]
@@ -34,6 +35,6 @@ public class EntityPropertiesTests
     {
         var result = EntityProperties.ContainsPropertyName(null!, "Name");
 
-        Assert.False(result);
+        result.Should().BeFalse();
     }
 }

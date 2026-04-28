@@ -1,5 +1,6 @@
 using Entities.Extensions;
 using Entities.Models;
+using FluentAssertions;
 
 namespace Tests.Entities;
 
@@ -26,9 +27,9 @@ public class EntityModelExtensionsTests
 
         dbEntity.Map(incoming);
 
-        Assert.Equal("Updated", dbEntity.Name);
-        Assert.Equal("Updated description", dbEntity.Description);
-        Assert.Equal(originalDate, dbEntity.RegisterDate);
+        dbEntity.Name.Should().Be("Updated");
+        dbEntity.Description.Should().Be("Updated description");
+        dbEntity.RegisterDate.Should().Be(originalDate);
     }
 
     [Fact]
@@ -36,6 +37,8 @@ public class EntityModelExtensionsTests
     {
         var dbEntity = new Entity();
 
-        Assert.Throws<NullReferenceException>(() => dbEntity.Map(null!));
+        Action act = () => dbEntity.Map(null!);
+
+        act.Should().Throw<NullReferenceException>();
     }
 }

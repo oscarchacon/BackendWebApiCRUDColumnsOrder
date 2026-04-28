@@ -3,6 +3,7 @@ using Entities.Helpers.Entities;
 using BusinesRules.Exceptions;
 using Entities.Models;
 using Entities.Utils;
+using Entities.Utils.Paged;
 using Entities.Utils.Paged.Interfaces;
 using Repository.Wrappers.Interfaces;
 using System;
@@ -56,8 +57,7 @@ public class EntitiesBR
     {
 
         var entities = await this.repository.Entity.GetAllPagedAsync(page, pageSize, columnName, orderDesc);
-        return this.mapper.Map<IPagedResult<EntityDTO>>(entities);
-
+        return this.mapper.Map<PagedResult<EntityDTO>>(entities);
     }
 
     /// <summary>

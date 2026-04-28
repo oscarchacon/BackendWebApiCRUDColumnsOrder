@@ -1,4 +1,5 @@
 using Entities;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Repository.Wrappers;
@@ -35,7 +36,7 @@ public class RepositoryWrapperTests
         var first = wrapper.Entity;
         var second = wrapper.Entity;
 
-        Assert.NotNull(first);
-        Assert.Same(first, second);
+        first.Should().NotBeNull();
+        first.Should().BeSameAs(second);
     }
 }

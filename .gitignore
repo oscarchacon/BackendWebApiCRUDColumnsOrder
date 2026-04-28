@@ -48,6 +48,10 @@ Temporary Items
 # Windows thumbnail cache files
 Thumbs.db
 ehthumbs.db
+
+# .NET coverage reports
+coveragereport/
+Tests/TestResults/
 ehthumbs_vista.db
 
 # Dump file

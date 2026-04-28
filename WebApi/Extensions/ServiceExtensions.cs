@@ -142,7 +142,7 @@ namespace WebApi.Extensions
         /// <param name="services">Services.</param>
         public static void AddMapper(this IServiceCollection services)
         {
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(_ => { }, AppDomain.CurrentDomain.GetAssemblies());
         }
 
 

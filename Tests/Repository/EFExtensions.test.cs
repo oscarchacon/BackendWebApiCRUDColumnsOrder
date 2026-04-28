@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Repository.Utils;
 
 namespace Tests.Repository;
@@ -9,7 +10,9 @@ public class EFExtensionsTests
     {
         IQueryable<int>? source = null;
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => source!.ToListAsyncSafe());
+        Func<Task> action = async () => await source!.ToListAsyncSafe();
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -19,7 +22,7 @@ public class EFExtensionsTests
 
         var result = await source.ToListAsyncSafe();
 
-        Assert.Equal(new[] { 1, 2, 3 }, result);
+        result.Should().Equal(new[] { 1, 2, 3 });
     }
 
     [Fact]
@@ -31,7 +34,9 @@ public class EFExtensionsTests
             new SampleRow { Name = "A" }
         }.AsQueryable();
 
-        Assert.ThrowsAny<Exception>(() => source.CustomOrderBy("DoesNotExist").ToList());
+        Action act = () => source.CustomOrderBy("DoesNotExist").ToList();
+
+        act.Should().Throw<Exception>();
     }
 
     [Fact]
@@ -43,7 +48,9 @@ public class EFExtensionsTests
             new SampleRow { Name = "A" }
         }.AsQueryable();
 
-        Assert.ThrowsAny<Exception>(() => source.CustomOrderByDescending("DoesNotExist").ToList());
+        Action act = () => source.CustomOrderByDescending("DoesNotExist").ToList();
+
+        act.Should().Throw<Exception>();
     }
 
     private sealed class SampleRow

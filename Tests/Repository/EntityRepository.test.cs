@@ -1,5 +1,6 @@
 using Entities;
 using Entities.Models;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 
@@ -20,7 +21,7 @@ public class EntityRepositoryTests
 
         var result = (await repository.GetAllAsync(columnName: "Name", orderDesc: true)).ToList();
 
-        Assert.Equal(new[] { "Gamma", "Beta", "Alpha" }, result.Select(x => x.Name).ToArray());
+        result.Select(x => x.Name).Should().Equal(new[] { "Gamma", "Beta", "Alpha" });
     }
 
     [Fact]
@@ -37,10 +38,10 @@ public class EntityRepositoryTests
 
         var result = await repository.GetAllPagedAsync(page: 2, pageSize: 2, columnName: "Name");
 
-        Assert.Equal(4, result.RowCount);
-        Assert.Equal(2, result.CurrentPage);
-        Assert.Equal(2, result.PageSize);
-        Assert.Equal(new[] { "C", "D" }, result.Results.Select(x => x.Name).ToArray());
+        result.RowCount.Should().Be(4);
+        result.CurrentPage.Should().Be(2);
+        result.PageSize.Should().Be(2);
+        result.Results.Select(x => x.Name).Should().Equal(new[] { "C", "D" });
     }
 
     [Fact]
@@ -51,8 +52,8 @@ public class EntityRepositoryTests
 
         var result = await repository.GetByIdAsync(Guid.NewGuid());
 
-        Assert.NotNull(result);
-        Assert.Equal(Guid.Empty, result.Id);
+        result.Should().NotBeNull();
+        result.Id.Should().Be(Guid.Empty);
     }
 
     [Fact]
@@ -61,7 +62,9 @@ public class EntityRepositoryTests
         using var context = BuildContext();
         var repository = new EntityRepository(context);
 
-        Assert.Throws<NotImplementedException>(() => repository.GetAll());
+        Action act = () => repository.GetAll();
+
+        act.Should().Throw<NotImplementedException>();
     }
 
     [Fact]
@@ -70,7 +73,9 @@ public class EntityRepositoryTests
         using var context = BuildContext();
         var repository = new EntityRepository(context);
 
-        Assert.Throws<NotImplementedException>(() => repository.GetAllPaged());
+        Action act = () => repository.GetAllPaged();
+
+        act.Should().Throw<NotImplementedException>();
     }
 
     [Fact]
@@ -84,8 +89,8 @@ public class EntityRepositoryTests
         await context.SaveChangesAsync();
 
         var saved = await context.Entities.SingleAsync();
-        Assert.NotEqual(Guid.Empty, saved.Id);
-        Assert.Equal("Created", saved.Name);
+        saved.Id.Should().NotBe(Guid.Empty);
+        saved.Name.Should().Be("Created");
     }
 
     private static RepositoryContext BuildContext()
