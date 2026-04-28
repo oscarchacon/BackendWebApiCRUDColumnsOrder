@@ -13,6 +13,7 @@ builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.ConfigureRepositoriesWrappers();
 builder.Services.ConfigureBusinessRules();
 builder.Services.ConfigureControllersWithJson();
+builder.Services.ConfigureApiVersioning();
 builder.Services.AddMapper();
 builder.Services.ConfigureSwaggerGen();
 

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Repository.Base
@@ -51,6 +52,15 @@ namespace Repository.Base
         public void Create(T entity)
         {
             this.RepositoryContext.Set<T>().Add(entity);
+        }
+
+        /// <summary>
+        /// Asynchronous method that allows inserting an object with entity data.
+        /// </summary>
+        /// <param name="entity">Entity object</param>
+        public async Task CreateAsync(T entity, CancellationToken cancellationToken = default)
+        {
+            await this.RepositoryContext.Set<T>().AddAsync(entity, cancellationToken);
         }
 
         /// <summary>

@@ -66,8 +66,14 @@ namespace WebApi.Helpers
         /// </summary>
         public const string SecurityApiKeyName = "Authorization";
 
+        /// <summary>
+        /// <para>Header</para>
+        /// </summary>
         public const ParameterLocation SecurityApiKeyIn = ParameterLocation.Header;
 
+        /// <summary>
+        /// <para>ApiKey</para>
+        /// </summary>
         public const SecuritySchemeType SecurityApiKeyType = SecuritySchemeType.ApiKey;
     }
 }

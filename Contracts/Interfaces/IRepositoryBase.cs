@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Contracts.Interfaces
@@ -31,6 +32,12 @@ namespace Contracts.Interfaces
         /// </summary>
         /// <param name="entity">Entity object</param>
         void Create(T entity);
+
+        /// <summary>
+        /// Asynchronous method that allows inserting an object with entity data.
+        /// </summary>
+        /// <param name="entity">Entity object</param>
+        Task CreateAsync(T entity, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Implementation method that allows updating entity object data.

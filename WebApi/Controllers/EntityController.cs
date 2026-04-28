@@ -21,7 +21,8 @@ namespace WebApi.Controllers
     /// </summary>
     [SwaggerTag("Controller for entity methods")]
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class EntityController : ControllerBase
     {

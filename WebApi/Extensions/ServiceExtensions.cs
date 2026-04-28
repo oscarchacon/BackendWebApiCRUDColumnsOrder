@@ -95,12 +95,8 @@ namespace WebApi.Extensions
 
                 swagger.DocInclusionPredicate((docName, apiDesc) =>
                 {
-                    if (!apiDesc.GroupName?.Equals(docName, StringComparison.OrdinalIgnoreCase) ?? true)
-                    {
-                        return false;
-                    }
-
-                    return true;
+                    return string.IsNullOrWhiteSpace(apiDesc.GroupName)
+                        || apiDesc.GroupName.Equals(docName, StringComparison.OrdinalIgnoreCase);
                 });
 
                 var security = new OpenApiSecurityRequirement{
