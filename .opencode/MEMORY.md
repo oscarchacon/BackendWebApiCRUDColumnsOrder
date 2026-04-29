@@ -20,6 +20,7 @@ Purpose: reduce "new-session amnesia" by keeping stable context and user prefere
 - SQLite path is relative: `./storage/DBstorage.db`.
 
 ## Session Memory Log (append newest first)
+- 2026-04-29: User wants custom OpenCode command markdown written in English when possible, while command execution may accept or respond in any language.
 - 2026-04-26: Created/updated `AGENTS.md` with repo-specific instructions and upgrade-friendly .NET guidance.
 - 2026-04-26: Added xUnit testing skill in English at `skills/xunit-unit-testing.md`.
 - 2026-04-26: Clarified that current target frameworks are temporary and expected to evolve.

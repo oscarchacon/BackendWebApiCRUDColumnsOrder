@@ -29,6 +29,8 @@ public class AppExtensionsTests
     public void UseSwaggerDocumentation_ShouldNotThrow()
     {
         var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddControllers();
         services.ConfigureApiVersioning();
         services.ConfigureSwaggerGen();
         var app = new ApplicationBuilder(services.BuildServiceProvider());
