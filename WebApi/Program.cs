@@ -29,6 +29,7 @@ app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthorization();
 app.UseSwaggerDocumentation();
+app.UseMiddlewares();
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())

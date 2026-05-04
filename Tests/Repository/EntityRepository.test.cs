@@ -57,25 +57,34 @@ public class EntityRepositoryTests
     }
 
     [Fact]
-    public void GetAll_WhenCalled_ThrowsNotImplementedException()
+    public void GetAll_WhenCalled_ReturnsSortedData()
     {
         using var context = BuildContext();
+        Seed(context,
+            new Entity { Id = Guid.NewGuid(), Name = "Alpha", Description = "A", RegisterDate = DateTime.UtcNow },
+            new Entity { Id = Guid.NewGuid(), Name = "Gamma", Description = "G", RegisterDate = DateTime.UtcNow },
+            new Entity { Id = Guid.NewGuid(), Name = "Beta", Description = "B", RegisterDate = DateTime.UtcNow });
         var repository = new EntityRepository(context);
 
-        Action act = () => repository.GetAll();
+        var result = repository.GetAll(columnName: "Name").ToList();
 
-        act.Should().Throw<NotImplementedException>();
+        result.Select(x => x.Name).Should().Equal(new[] { "Alpha", "Beta", "Gamma" });
     }
 
     [Fact]
-    public void GetAllPaged_WhenCalled_ThrowsNotImplementedException()
+    public void GetAllPaged_WhenCalled_ReturnsExpectedPageData()
     {
         using var context = BuildContext();
+        Seed(context,
+            new Entity { Id = Guid.NewGuid(), Name = "A", Description = "A", RegisterDate = DateTime.UtcNow },
+            new Entity { Id = Guid.NewGuid(), Name = "B", Description = "B", RegisterDate = DateTime.UtcNow },
+            new Entity { Id = Guid.NewGuid(), Name = "C", Description = "C", RegisterDate = DateTime.UtcNow });
         var repository = new EntityRepository(context);
 
-        Action act = () => repository.GetAllPaged();
+        var result = repository.GetAllPaged(page: 2, pageSize: 2, columnName: "Name");
 
-        act.Should().Throw<NotImplementedException>();
+        result.RowCount.Should().Be(3);
+        result.Results.Select(x => x.Name).Should().Equal(new[] { "C" });
     }
 
     [Fact]

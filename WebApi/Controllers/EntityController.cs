@@ -52,7 +52,7 @@ namespace WebApi.Controllers
         /// <response code="403">Forbidden</response>   
         /// <response code="500">Internal server error</response> 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Entity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<EntityDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -81,7 +81,7 @@ namespace WebApi.Controllers
         /// <response code="403">Forbidden</response>   
         /// <response code="500">Internal server error</response> 
         [HttpGet("Paged")]
-        [ProducesResponseType(typeof(IPagedResult<Entity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPagedResult<EntityDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -106,7 +106,7 @@ namespace WebApi.Controllers
         /// <response code="403">Forbidden</response>   
         /// <response code="500">Internal server error</response>   
         [HttpGet("{id:guid}", Name = "EntityById")]
-        [ProducesResponseType(typeof(Entity), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EntityDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -132,7 +132,7 @@ namespace WebApi.Controllers
         /// <response code="403">Forbidden</response>   
         /// <response code="500">Internal server error</response>   
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(Entity), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(EntityDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -146,7 +146,9 @@ namespace WebApi.Controllers
             await this.entitiesBR.CreateEntity(entity);
             if (entity.IsEmptyObject()) { return BadRequest(new ResponseMessage { Message = "Entity Object is not Created" }); }
 
-            return CreatedAtRoute("EntityById", new { id = entity.Id }, entity);
+            var entityCreated = mapper.Map<EntityDTO>(entity);
+            var apiVersion = ControllerContext.RouteData?.Values["version"]?.ToString() ?? "1";
+            return CreatedAtRoute("EntityById", new { version = apiVersion, id = entity.Id }, entityCreated);
         }
 
         /// <summary>
@@ -168,14 +170,15 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(Guid id, [FromBody] Entity entity)
+        public async Task<IActionResult> Put(Guid id, [FromBody] EntityUpdateModel entity)
         {
 
             if (id.Equals(Guid.Empty)) { return BadRequest(new ResponseMessage { Message = "Id is Empty" }); }
             if (entity.IsObjectNull()) { return BadRequest(new ResponseMessage { Message = "Entity Object is Null" }); }
             if (!ModelState.IsValid) { return BadRequest(new ResponseMessage { Message = "Invalid model object" }); }
 
-            var secuence = await this.entitiesBR.UpdateEntity(id, entity);
+            var entityUpdated = mapper.Map<Entity>(entity);
+            var secuence = await this.entitiesBR.UpdateEntity(id, entityUpdated);
 
             if (secuence.IsObjectNull()) { return NotFound(); }
 

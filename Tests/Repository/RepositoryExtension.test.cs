@@ -48,6 +48,21 @@ public class RepositoryExtensionTests
         result.Select(x => x.Value).Should().Equal(new[] { 5, 6 });
     }
 
+    [Theory]
+    [InlineData(0, 10, "page")]
+    [InlineData(1, 0, "pageSize")]
+    [InlineData(-1, 10, "page")]
+    [InlineData(1, -10, "pageSize")]
+    public void GetPaged_WhenPagingIsInvalid_ShouldThrowArgumentOutOfRangeException(int page, int pageSize, string expectedParameter)
+    {
+        var source = Enumerable.Range(1, 10).Select(v => new SampleRow { Value = v }).AsQueryable();
+
+        Action action = () => source.GetPaged(page, pageSize);
+
+        action.Should().Throw<ArgumentOutOfRangeException>()
+            .Where(exception => exception.ParamName == expectedParameter);
+    }
+
     private sealed class SampleRow
     {
         public int Id { get; set; }

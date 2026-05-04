@@ -53,14 +53,17 @@ public class ExceptionHandlingMiddleware
                 NotFoundException => (int)HttpStatusCode.NotFound,
                 BadRequestException => (int)HttpStatusCode.BadRequest,
                 NotAllowedException => (int)HttpStatusCode.MethodNotAllowed,
+                ArgumentOutOfRangeException => (int)HttpStatusCode.BadRequest,
+                ArgumentException => (int)HttpStatusCode.BadRequest,
                 _ => (int)HttpStatusCode.InternalServerError,
             };
 
             var responseError = new
             {
                 code = response.StatusCode,
-                message = exception?.Message,
-                error = exception?.ToString()
+                message = response.StatusCode == (int)HttpStatusCode.InternalServerError
+                    ? "An unexpected error occurred."
+                    : exception.Message
             };
             await response.WriteAsync(JsonConvert.SerializeObject(responseError));
         }

@@ -8,6 +8,7 @@ using Entities.Models;
 using Entities.Utils;
 using Entities.Utils.Paged;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Repository.Wrappers.Interfaces;
@@ -130,6 +131,8 @@ public class EntityControllerTests
         }
 
         controllerMapperMock.Setup(mapper => mapper.Map<Entity>(It.IsAny<EntityRegisterModel>())).Returns(mappedEntity);
+        controllerMapperMock.Setup(mapper => mapper.Map<EntityDTO>(mappedEntity))
+            .Returns(new EntityDTO { Id = mappedEntity.Id, Name = mappedEntity.Name, Description = mappedEntity.Description });
         entityRepoMock.Setup(repository => repository.CreateEntityAsync(mappedEntity, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         repoMock.Setup(repository => repository.SaveAsync()).Returns(Task.CompletedTask);
 
@@ -159,7 +162,7 @@ public class EntityControllerTests
     {
         var (controller, _, _, _, _) = BuildController();
 
-        var result = await controller.Put(Guid.Empty, new Entity());
+        var result = await controller.Put(Guid.Empty, new EntityUpdateModel());
 
         result.Should().BeOfType<BadRequestObjectResult>();
     }
@@ -180,7 +183,7 @@ public class EntityControllerTests
         var (controller, _, _, _, _) = BuildController();
         controller.ModelState.AddModelError("Name", "Name is required");
 
-        var result = await controller.Put(Guid.NewGuid(), new Entity());
+        var result = await controller.Put(Guid.NewGuid(), new EntityUpdateModel());
 
         result.Should().BeOfType<BadRequestObjectResult>();
     }
@@ -194,11 +197,13 @@ public class EntityControllerTests
         var existing = entityExists
             ? new Entity { Id = id, Name = "Old", Description = "Old", RegisterDate = DateTime.UtcNow }
             : new Entity();
-        var update = new Entity { Name = "New", Description = "New" };
+        var update = new EntityUpdateModel { Name = "New", Description = "New" };
+        var mappedUpdate = new Entity { Name = "New", Description = "New" };
         var dto = new EntityDTO { Id = id, Name = "New", Description = "New" };
 
-        var (controller, repoMock, entityRepoMock, brMapperMock, _) = BuildController();
+        var (controller, repoMock, entityRepoMock, brMapperMock, controllerMapperMock) = BuildController();
         entityRepoMock.Setup(repository => repository.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
+        controllerMapperMock.Setup(mapper => mapper.Map<Entity>(update)).Returns(mappedUpdate);
         if (entityExists)
         {
             brMapperMock.Setup(mapper => mapper.Map<EntityDTO>(It.IsAny<Entity>())).Returns(dto);
@@ -254,7 +259,13 @@ public class EntityControllerTests
         wrapperMock.Setup(wrapper => wrapper.SaveAsync()).Returns(Task.CompletedTask);
 
         var entitiesBR = new EntitiesBR(wrapperMock.Object, brMapperMock.Object);
-        var controller = new EntityController(entitiesBR, controllerMapperMock.Object);
+        var controller = new EntityController(entitiesBR, controllerMapperMock.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
 
         return (controller, wrapperMock, entityRepositoryMock, brMapperMock, controllerMapperMock);
     }

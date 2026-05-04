@@ -38,7 +38,11 @@ public class ExceptionHandlingMiddlewareTests
         var payload = await reader.ReadToEndAsync();
         var json = JObject.Parse(payload);
         json["code"]!.Value<int>().Should().Be(expectedStatusCode);
-        json["message"]!.Value<string>().Should().Be(exception.Message);
+        var expectedMessage = expectedStatusCode == StatusCodes.Status500InternalServerError
+            ? "An unexpected error occurred."
+            : exception.Message;
+        json["message"]!.Value<string>().Should().Be(expectedMessage);
+        json["error"].Should().BeNull();
     }
 
     [Fact]

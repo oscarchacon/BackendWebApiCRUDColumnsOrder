@@ -23,8 +23,10 @@ namespace Repository.Utils
         /// <param name="pageSize">Elements per page</param>
         /// <returns>Pagination object with list of objects</returns>
         public static PagedResult<T> GetPaged<T>(this IQueryable<T> query,
-                                          int page, int pageSize) where T : class
+                                           int page, int pageSize) where T : class
         {
+            ValidatePaging(page, pageSize);
+
             var result = new PagedResult<T>
             {
                 CurrentPage = page,
@@ -51,8 +53,10 @@ namespace Repository.Utils
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Pagination object with list of objects</returns>
         public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query,
-                                          int page, int pageSize, CancellationToken cancellationToken = default) where T : class
+                                           int page, int pageSize, CancellationToken cancellationToken = default) where T : class
         {
+            ValidatePaging(page, pageSize);
+
             var result = new PagedResult<T>
             {
                 CurrentPage = page,
@@ -79,8 +83,10 @@ namespace Repository.Utils
         /// <param name="pageSize">Elements per page</param>
         /// <returns>Paged list of objects</returns>
         public static IEnumerable<T> GetPagedList<T>(this IQueryable<T> query,
-                                          int page, int pageSize) where T : class
+                                           int page, int pageSize) where T : class
         {
+            ValidatePaging(page, pageSize);
+
             var skip = (page - 1) * pageSize;
             var results = query.Skip(skip).Take(pageSize).AsEnumerable().ToList();
 
@@ -97,8 +103,10 @@ namespace Repository.Utils
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Paged list of objects</returns>
         public static async Task<IEnumerable<T>> GetPagedListAsync<T>(this IQueryable<T> query,
-                                          int page, int pageSize, CancellationToken cancellationToken = default) where T : class
+                                           int page, int pageSize, CancellationToken cancellationToken = default) where T : class
         {
+            ValidatePaging(page, pageSize);
+
             var skip = (page - 1) * pageSize;
             var results = await query.Skip(skip).Take(pageSize).ToListAsync(cancellationToken);
 
@@ -114,8 +122,10 @@ namespace Repository.Utils
         /// <param name="pageSize">Elements per page</param>
         /// <returns>Pagination object with list of objects</returns>
         public static async Task<PagedResult<T>> GetPagedAsAsync<T>(this IQueryable<T> query,
-                                          int page, int pageSize) where T : class
+                                           int page, int pageSize) where T : class
         {
+            ValidatePaging(page, pageSize);
+
             var result = new PagedResult<T>
             {
                 CurrentPage = page,
@@ -131,6 +141,19 @@ namespace Repository.Utils
             result.Results = await Task.FromResult(results.ToList());
 
             return result;
+        }
+
+        private static void ValidatePaging(int page, int pageSize)
+        {
+            if (page <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(page), "Page must be greater than zero.");
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
+            }
         }
     }
 }

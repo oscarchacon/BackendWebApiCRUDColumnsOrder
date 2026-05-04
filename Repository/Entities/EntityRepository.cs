@@ -113,7 +113,7 @@ namespace Repository.Entities
         /// <param name="cancellationToken">Cancellation token</param>
         public async Task CreateEntityAsync(Entity entity, CancellationToken cancellationToken = default)
         {
-            entity.Id = new Guid();
+            entity.Id = Guid.NewGuid();
             await this.CreateAsync(entity, cancellationToken);
         }
 
@@ -139,12 +139,42 @@ namespace Repository.Entities
 
         public IEnumerable<Entity> GetAll(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false)
         {
-            throw new NotImplementedException();
+            var entitiesFind = this.FindAll();
+            if (!string.IsNullOrWhiteSpace(columnName) && EntityProperties.ContainsPropertyName(typeof(Entity), columnName))
+            {
+                entitiesFind = orderDesc
+                    ? entitiesFind.CustomOrderByDescending(columnName)
+                    : entitiesFind.CustomOrderBy(columnName);
+            }
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                return entitiesFind.GetPagedList(page.Value, pageSize.Value);
+            }
+
+            return entitiesFind.ToList();
         }
 
         public IPagedResult<Entity> GetAllPaged(int? page = null, int? pageSize = null, string columnName = null, bool orderDesc = false)
         {
-            throw new NotImplementedException();
+            var entitiesFind = this.FindAll();
+            if (!string.IsNullOrWhiteSpace(columnName) && EntityProperties.ContainsPropertyName(typeof(Entity), columnName))
+            {
+                entitiesFind = orderDesc
+                    ? entitiesFind.CustomOrderByDescending(columnName)
+                    : entitiesFind.CustomOrderBy(columnName);
+            }
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                return entitiesFind.GetPaged(page.Value, pageSize.Value);
+            }
+
+            return new PagedResult<Entity>
+            {
+                RowCount = entitiesFind.Count(),
+                Results = entitiesFind.ToList()
+            };
         }
 
         /// <summary>
@@ -164,7 +194,7 @@ namespace Repository.Entities
         /// <param name="entity">Entity object</param>
         public void CreateEntity(Entity entity)
         {
-            entity.Id = new Guid();
+            entity.Id = Guid.NewGuid();
             this.Create(entity);
         }
     }

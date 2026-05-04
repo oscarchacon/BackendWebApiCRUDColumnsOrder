@@ -20,6 +20,7 @@ namespace Entities.Helpers
         public AutoMapperProfile()
         {
             this.CreateMap<EntityRegisterModel, Entity>();
+            this.CreateMap<EntityUpdateModel, Entity>();
             this.CreateMap<EntityDTO, Entity>().ReverseMap();
             this.CreateMap<IPagedResult<EntityDTO>, IPagedResult<Entity>>().ReverseMap();
         }

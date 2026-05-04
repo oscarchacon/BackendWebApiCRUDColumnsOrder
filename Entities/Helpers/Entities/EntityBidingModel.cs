@@ -13,4 +13,12 @@ namespace Entities.Helpers.Entities
         public string Description { get; set; }
 
     }
+
+    public class EntityUpdateModel
+    {
+        [Required]
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+    }
 }
