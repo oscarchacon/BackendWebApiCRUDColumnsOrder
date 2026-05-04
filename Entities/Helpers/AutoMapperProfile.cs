@@ -2,6 +2,7 @@
 using Entities.DTO;
 using Entities.Helpers.Entities;
 using Entities.Models;
+using Entities.Utils.Paged;
 using Entities.Utils.Paged.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace Entities.Helpers
             this.CreateMap<EntityUpdateModel, Entity>();
             this.CreateMap<EntityDTO, Entity>().ReverseMap();
             this.CreateMap<IPagedResult<EntityDTO>, IPagedResult<Entity>>().ReverseMap();
+            this.CreateMap<PagedResult<EntityDTO>, PagedResult<Entity>>().ReverseMap();
         }
     }
 }
