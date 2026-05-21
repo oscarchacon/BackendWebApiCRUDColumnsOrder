@@ -1,4 +1,5 @@
 ---
+name: prompt
 description: Generate a production-ready prompt using Anthropic best practices
 ---
 You are an expert prompt engineer for Claude.

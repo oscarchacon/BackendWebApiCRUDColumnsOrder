@@ -1,3 +1,8 @@
+---
+name: xunit-unit-testing
+description: 'Provides guidance and best practices for implementing xUnit unit tests in .NET 5+ projects, with a focus on testing business rules and repository utilities in the context of the provided Web API CRUD solution.'
+---
+
 # xUnit Unit Testing Skill (.NET 5+)
 
 ## Purpose

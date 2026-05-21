@@ -1,3 +1,8 @@
+---
+name: skills
+description: 'Defines the set of skills available to agents in this repository, including their responsibilities, operating rules, and recommended workflows. Each skill is designed to provide focused guidance and support for specific areas of development within the context of this ASP.NET Core / EF Core CRUD API solution.'
+---
+
 # Skill: .NET Web API Repo Assistant
 
 ## Purpose
@@ -6,12 +11,17 @@ Provide repository-specific guidance, code changes, and implementation support f
 ## Responsibilities
 - Diagnose and implement requested feature work in the layered architecture: `WebApi -> BusinesRules -> Repository -> Contracts -> Entities`.
 - Keep controllers thin and place business logic in `BusinesRules` and data access in `Repository`.
-- Maintain compatibility with current target frameworks while keeping changes upgrade-friendly.
-- Verify ordering, paging, mapping, and DI registration when entity shape or behavior changes.
+
+### When making changes, proceed in this order:
+1. **Ensure framework compatibility** – Maintain current target frameworks (`net5.0` for WebApi, `net5.0` for libraries).
+2. **Verify entity changes** – When modifying entity shape or behavior, inspect `AutoMapperProfile.cs` and repository utilities.
+3. **Check ordering, paging, and mapping** – Confirm these features work correctly with updated entities.
+4. **Validate DI registration** – Register new services in `ServiceExtensions.cs`.
+5. **Plan upgrade path** – Keep changes forward-compatible to minimize future refactoring.
 
 ## Repo-specific behavior
 - Use `BackendWebApiCRUDColumnsOrder.sln` as the solution entrypoint.
-- The current runtime stack uses `WebApi` targeting `net5.0`, and class libraries targeting `netstandard2.1`.
+- The current runtime stack uses `WebApi` targeting `net5.0`, and class libraries targeting `net5.0`.
 - `WebApi/Startup.cs` currently recreates the SQLite database on startup; do not assume persisted state across runs.
 - Swagger is served at root (`/`) from `WebApi/Extensions/AppExtensions.cs`.
 - SQLite path is configured relative to the app root in `WebApi/Extensions/ServiceExtensions.cs`.
@@ -29,4 +39,4 @@ Provide repository-specific guidance, code changes, and implementation support f
 - `dotnet test BackendWebApiCRUDColumnsOrder.sln` (when tests exist)
 
 ## Notes
-This skill file is meant to complement the existing `.opencode/AGENTS.md` profile and provide a local skill definition for repository-focused assistance.
+This skill file is meant to complement the existing `AGENTS.md` profile and provide a local skill definition for repository-focused assistance.
